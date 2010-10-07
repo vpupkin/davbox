@@ -5,30 +5,6 @@
     <servlet-class>cc.co.llabor.JdavServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>SimpleWebDav</servlet-name>
-    <servlet-class>brix.demo.web.dav.SimpleServlet</servlet-class>
-    <init-param>
-      <param-name>resource-path-prefix</param-name>
-      <param-value>/webdav</param-value>
-    </init-param>
-    <init-param>
-      <param-name>resource-config</param-name>
-      <param-value>/WEB-INF/config.xml</param-value>
-    </init-param>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>SimpleWebDav</servlet-name>
-    <url-pattern>/webdav/*</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>JcrWebDav</servlet-name>
-    <servlet-class>brix.demo.web.dav.JcrServlet</servlet-class>
-    <init-param>
-      <param-name>resource-path-prefix</param-name>
-      <param-value>/jcrwebdav</param-value>
-    </init-param>
-  </servlet>
-  <servlet>
     <servlet-name>SfWebDav</servlet-name>
     <servlet-class>net.sf.webdav.WebdavServlet</servlet-class>
     <init-param>
@@ -44,14 +20,7 @@
     <servlet-name>SfWebDav</servlet-name>
     <url-pattern>/sfdav/*</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>JcrWebDav</servlet-name>
-    <url-pattern>/jcrwebdav/*</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>Jdav</servlet-name>
-    <url-pattern>/jdav</url-pattern>
-  </servlet-mapping>
+ 
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
