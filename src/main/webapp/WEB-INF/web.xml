@@ -13,7 +13,7 @@
     </init-param>
     <init-param>
       <param-name>ResourceHandlerImplementation</param-name>
-      <param-value>cc.co.llabor.dav.MyDav</param-value>
+      <param-value>cc.co.llabor.dav.zip.Zip4Dav</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>

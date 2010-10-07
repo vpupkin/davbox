@@ -39,8 +39,7 @@ public class MyDav implements IWebdavStore {
 
 	public MyDav(File e){
 		this.file = e;
-		setUp();
-		
+		setUp(); 
 	}
 	
     public void setUp()  
