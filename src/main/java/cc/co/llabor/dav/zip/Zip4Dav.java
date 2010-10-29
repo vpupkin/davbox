@@ -114,6 +114,7 @@ public class Zip4Dav implements IWebdavStore {
 			for (ZipEntry e = in.getNextEntry(); e != null; e = in
 					.getNextEntry()) {
 				String itemName = "/"+ e.getName();
+				if (itemName.indexOf(folderUri)<0)continue;
 				int suffixStart = folderUri.length() ;
 				String suffix = itemName.substring( suffixStart );
 				suffix = suffix.indexOf("/")==0?suffix.substring(1):suffix;
