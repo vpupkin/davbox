@@ -53,48 +53,28 @@ public class ZipObject extends StoredObject {
 	}
 
 	@Override
-	public void setCreationDate(Date c) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 07.10.2010");
-		else {
-		super.setCreationDate(c);
-		}
+	public void setCreationDate(Date c) { 
+		super.setCreationDate(c); 
 	}
 
 	@Override
-	public void setFolder(boolean f) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 07.10.2010");
-		else {
-		super.setFolder(f);
-		}
+	public void setFolder(boolean f) { 
+		super.setFolder(f); 
 	}
 
 	@Override
-	public void setLastModified(Date d) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 07.10.2010");
-		else {
+	public void setLastModified(Date d) { 
 		super.setLastModified(d);
-		}
 	}
 
 	@Override
-	public void setNullResource(boolean f) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 07.10.2010");
-		else {
-		super.setNullResource(f);
-		}
+	public void setNullResource(boolean f) { 
+		super.setNullResource(f); 
 	}
 
 	@Override
-	public void setResourceLength(long l) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 07.10.2010");
-		else {
-		super.setResourceLength(l);
-		}
+	public void setResourceLength(long l) { 
+		super.setResourceLength(l); 
 	}
 
 }

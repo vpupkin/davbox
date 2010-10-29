@@ -109,13 +109,35 @@ public class Zip4Dav implements IWebdavStore {
 		List<String> childList = new ArrayList<String>();
 		resIn = getInZip();
 		in = new ZipInputStream(resIn);
-
+		int level = 0;
 		try {
 			for (ZipEntry e = in.getNextEntry(); e != null; e = in
 					.getNextEntry()) {
-				String itemName = e.getName();
-				if (itemName.startsWith(folderUri) || itemName.startsWith("gaevfs-0.3"+folderUri)) {
-					childList.add(itemName);
+				String itemName = "/"+ e.getName();
+				int suffixStart = folderUri.length() ;
+				String suffix = itemName.substring( suffixStart );
+				suffix = suffix.indexOf("/")==0?suffix.substring(1):suffix;
+				suffix = suffix.indexOf("/")>0?suffix.substring(0,suffix.indexOf("/")):suffix;
+				 
+				if (!childList.contains(suffix )){
+					childList.add(suffix);
+				}
+				if (1==2){
+								try {
+									suffix = itemName.substring(folderUri.length());
+								}catch(Exception e1){}
+								if (itemName.startsWith(folderUri) && suffix.indexOf("/")<0) {
+									childList.add(itemName);
+									System.out.println("CCCCCCCCCCCCILD:"+itemName);
+								}else{
+									String dir = "/"+suffix.substring(0, suffix.indexOf("/") );
+									if (childList.indexOf(dir) < 0){
+										childList.add(dir);
+										System.out.println("DDDDDDDDDDDDILD:"+dir);
+									}
+									
+									
+								}
 				}
 			}
 		} catch (IOException e) {
@@ -134,9 +156,9 @@ public class Zip4Dav implements IWebdavStore {
 		try {
 			for (ZipEntry e = in.getNextEntry(); e != null; e = in
 					.getNextEntry()) {
-				String itemName = e.getName();
+				String itemName = "/"+e.getName();
 				if (itemName.equals( (resourceUri) ) ) {
-					return new ByteArrayInputStream (e.getExtra());
+					return in;
 				}
 			}
 		} catch (IOException e) {
@@ -195,27 +217,37 @@ public class Zip4Dav implements IWebdavStore {
 			StoredObject rootTmp =  new StoredObject() ;
 			rootTmp .setFolder(true);
 			rootTmp .setLastModified( new Date() );
-			rootTmp .setCreationDate( new Date() );
-			
+			rootTmp .setCreationDate( new Date() ); 
 			return rootTmp ;
 		}
-	
+		
+		StoredObject retval = null;
 		try {
-			for (ZipEntry e = in.getNextEntry(); e != null; e = in
-					.getNextEntry()) {
+			for (ZipEntry e = in.getNextEntry(); e != null; e = in.getNextEntry()) {
 				String itemName = e.getName();
 				itemName = "/"+itemName;
-				if (itemName.equals( (uri) ) ) {
-					return new ZipObject(e);
+				if (itemName.equals(uri)){
+					retval = new ZipObject(e);
+					break;
+				}
+				int sPosTmp =itemName.indexOf(uri);
+				if (sPosTmp == -1) continue;
+				String suffixTmp = itemName.substring(sPosTmp);
+				if (suffixTmp.length() >0 ) { // dir!
+					retval = new StoredObject( );
+					retval .setFolder(true);
+					retval .setLastModified( new Date() );
+					retval .setCreationDate( new Date() ); 					
+					break;
 				}else{
-					System.out.println("skipped >"+itemName);
+					System.out.println("ignred >"+itemName);
 				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;	
+		return retval;	
 	}
 
  
@@ -276,7 +308,8 @@ public class Zip4Dav implements IWebdavStore {
 			out = null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 }
