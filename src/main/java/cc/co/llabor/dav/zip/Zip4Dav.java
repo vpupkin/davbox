@@ -2,16 +2,14 @@ package cc.co.llabor.dav.zip;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
+import java.io.File; 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStream; 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Date; 
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipEntry; 
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -30,26 +28,15 @@ import net.sf.webdav.StoredObject;
  * Creation:  07.10.2010::18:18:04<br> 
  */
 public class Zip4Dav implements IWebdavStore {
-	
-	ZipFile f = null;
+	 
 	private File file;
 	private MyTransaction transaction;
-	{
-		try {
-			f = new ZipFile("");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+ 
 
 	public ITransaction begin(Principal principal) {
 		if (principal == null) return null; // no principal - no transaction
 		if (this.transaction  == null){
-			setUp();
+			//setUp();
 			this.transaction = new MyTransaction(principal);
 		} 			
 		else
@@ -62,9 +49,8 @@ public class Zip4Dav implements IWebdavStore {
 	}
 
 	public void commit(ITransaction transaction) {
-		tearDown();
-		this.transaction  = null;
-		// ok 
+		tearDown(); 
+		this.transaction = null; 
 	}
 
 
@@ -72,10 +58,15 @@ public class Zip4Dav implements IWebdavStore {
 	public void createFolder(ITransaction transaction, String folderUri) {
  
 		try {
-			for ( ZipEntry e = in.getNextEntry();e != null ; e = in.getNextEntry()){
+			ZipInputStream in = getInZip();
+			for ( ZipEntry e = in .getNextEntry();e != null ; e = in.getNextEntry()){
 				if (e.getName() == folderUri ) return;
 			}
+			
+			ZipEntry e = new ZipEntry(folderUri) ;
+			
 			// TODO Crete ////////////////////////
+			this.out.putNextEntry(e );this.out.closeEntry();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -89,16 +80,33 @@ public class Zip4Dav implements IWebdavStore {
 		checkTR(transaction);
 		newE = new ZipEntry(resourceUri);
 		try {
-			out.closeEntry();
-			
 			out.putNextEntry(newE);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-		
+		}		
 	}
+	public long setResourceContent(ITransaction transaction,
+			String resourceUri, InputStream content, String contentType,
+			String characterEncoding) {
+		checkTR(transaction);
+		if (!resourceUri.equals(newE.getName())) throw new RuntimeException("new Entry is not created! try to create first the entrry with name " +resourceUri );
+		newE.setComment(contentType  +" ,"+ characterEncoding);
+		try {
+			int lenTmp = 0;
+ 			for ( int nextTmp = content.read( ); nextTmp != -1 ;	nextTmp = content.read( )){
+ 				out. write(nextTmp);
+ 				lenTmp++;
+ 			}
+ 			out.closeEntry();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
+		return newE.getSize();
+	}	
+	
 	/**
 	 * @author vipup
 	 * @param transaction
@@ -110,9 +118,7 @@ public class Zip4Dav implements IWebdavStore {
 
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
 		List<String> childList = new ArrayList<String>();
-		resIn = getInZip();
-		in = new ZipInputStream(resIn);
-		int level = 0;
+		ZipInputStream in = getInZip(); 
 		try {
 			for (ZipEntry e = in.getNextEntry(); e != null; e = in
 					.getNextEntry()) {
@@ -121,27 +127,9 @@ public class Zip4Dav implements IWebdavStore {
 				int suffixStart = folderUri.length() ;
 				String suffix = itemName.substring( suffixStart );
 				suffix = suffix.indexOf("/")==0?suffix.substring(1):suffix;
-				suffix = suffix.indexOf("/")>0?suffix.substring(0,suffix.indexOf("/")):suffix;
-				 
+				suffix = suffix.indexOf("/")>0?suffix.substring(0,suffix.indexOf("/")):suffix;				 
 				if (!childList.contains(suffix )){
 					childList.add(suffix);
-				}
-				if (1==2){
-								try {
-									suffix = itemName.substring(folderUri.length());
-								}catch(Exception e1){}
-								if (itemName.startsWith(folderUri) && suffix.indexOf("/")<0) {
-									childList.add(itemName);
-									System.out.println("CCCCCCCCCCCCILD:"+itemName);
-								}else{
-									String dir = "/"+suffix.substring(0, suffix.indexOf("/") );
-									if (childList.indexOf(dir) < 0){
-										childList.add(dir);
-										System.out.println("DDDDDDDDDDDDILD:"+dir);
-									}
-									
-									
-								}
 				}
 			}
 		} catch (IOException e) {
@@ -153,9 +141,8 @@ public class Zip4Dav implements IWebdavStore {
 
 	public InputStream getResourceContent(ITransaction transaction,
 			String resourceUri) {
-		checkTR(transaction);
-		resIn = getInZip();
-		in = new ZipInputStream(resIn);
+		checkTR(transaction); 
+		ZipInputStream in = getInZip();
 
 		try {
 			for (ZipEntry e = in.getNextEntry(); e != null; e = in
@@ -172,31 +159,11 @@ public class Zip4Dav implements IWebdavStore {
 		return null;
 	}
 	
-	public long setResourceContent(ITransaction transaction,
-			String resourceUri, InputStream content, String contentType,
-			String characterEncoding) {
-		checkTR(transaction);
-		if (!resourceUri.equals(newE.getName())) throw new RuntimeException("new Entry is not created! try to create first the entrry with name " +resourceUri );
-		newE.setComment(contentType  +" ,"+ characterEncoding);
-		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		byte[] extra;
-		try {
-			extra = new byte[content.available()];
-			content.read(extra ) ;			
-			newE.setExtra(extra );
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		return newE.getSize();
-	}	
 
 	public long getResourceLength(ITransaction transaction, String path) {
-		checkTR(transaction);
-		resIn = getInZip();
-		in = new ZipInputStream(resIn);
+		checkTR(transaction); 
+		ZipInputStream in = getInZip();
 
 		try {
 			for (ZipEntry e = in.getNextEntry(); e != null; e = in
@@ -214,9 +181,8 @@ public class Zip4Dav implements IWebdavStore {
 	}
 
 	public StoredObject getStoredObject(ITransaction transaction, String uri) {
-		checkTR(transaction);
-		resIn = getInZip();
-		in = new ZipInputStream(resIn);
+		checkTR(transaction); 
+		ZipInputStream in = getInZip();
 		if ("/".equals(uri)){
 			StoredObject rootTmp =  new StoredObject() ;
 			rootTmp .setFolder(true);
@@ -265,17 +231,9 @@ public class Zip4Dav implements IWebdavStore {
 	}
 
 	public void rollback(ITransaction transaction) {
-		// TODO same with tearDown
-		try {
-			in.close(); 
-			in = null;
-			out.close();
-			// TODO store Zip ???
-			out = null;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		tearDown();
+		this.transaction = null; 
+		
 	}
 
 
@@ -284,37 +242,83 @@ public class Zip4Dav implements IWebdavStore {
 		this.file = e;
 		setUp(); 
 	}
-	OutputStream bout  ;
-	ZipOutputStream out  ;
-	InputStream resIn ;
-	ZipInputStream in ;
+	ByteArrayOutputStream bout  ;
+	ZipOutputStream out  ; 
 	
 	private void setUp() {
 		 bout = new ByteArrayOutputStream();
-		 out =  new ZipOutputStream(bout );
-		 resIn =  getInZip();
-		 in =  new ZipInputStream( resIn   );
+		 out =  new ZipOutputStream(bout );  
 	}
 
 	/**
 	 * @author vipup
+	 * @throws IOException 
 	 */
-	private InputStream getInZip() {
-		InputStream retval  = this.getClass().getClassLoader().getResourceAsStream("gaevfs-0.3.zip");////this.file.getPath()   +
-		return retval; 
-	}
-	private void tearDown() {
-		try {
-			in.close(); 
-			in = null;
-			out.close();
-			// TODO store Zip 
-			out = null;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			System.out.println(e.getMessage());
+	private ZipInputStream getInZip() {
+		ZipInputStream zipTmp  = null; // new FileInputStream(this.file);
+		if (this.bout.toByteArray().length >0 ){
+			try{
+				// close LOCAL_OUT && fin to BA
+				/*out.flush();out.close();*/bout.flush();bout.close();
+				final byte[] baTmp = bout.toByteArray();
+				final ByteArrayInputStream baInTmp = new ByteArrayInputStream (baTmp);
+				zipTmp = new ZipInputStream(baInTmp);
+				// init LOCAL_OUT
+				setUp();
+				zipTmp = copyZip(zipTmp);				
+			}catch (Exception e) {
+				e.printStackTrace( );
+			}
+		}else{
+			// check stored Data
+			//zipTmp= this.bout.toByteArray().length > 0?new ByteArrayInputStream (this.bout.toByteArray()):zipTmp;
+			// In As FullPath   
+			//zipTmp  = zipTmp ==null? new ZipInputStream( this.getClass().getClassLoader().getResourceAsStream(this.file.getAbsolutePath()  )):zipTmp;////this.file.getPath()   +
+			// In As Name		
+			zipTmp  = zipTmp ==null? new ZipInputStream( this.getClass().getClassLoader().getResourceAsStream(this.file.getName()   )):zipTmp;////this.file.getPath()   +
+			// sync with LOCAL_OUT
+			try {
+				zipTmp = copyZip(zipTmp);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
+		return zipTmp;
+		
+	}
+	// copy zipIn to zipIn && zipOut
+	private ZipInputStream copyZip(ZipInputStream zipPar) throws IOException {
+		// copy full zip
+		ByteArrayOutputStream boutTmp = new ByteArrayOutputStream();
+		ZipOutputStream outTmp = new ZipOutputStream(boutTmp ); 
+		 
+		for(ZipEntry zeTmp = zipPar.getNextEntry();zeTmp != null; zeTmp = zipPar.getNextEntry() )
+		try{
+			ZipEntry newZE = new ZipEntry(zeTmp.getName());
+			byte b[] = new byte[(int)zeTmp.getSize()];
+			zipPar.read(b); 
+			// put to TMP
+			outTmp.putNextEntry(newZE);
+			outTmp.write(b);
+			outTmp.closeEntry();
+			// cc to LOCAL_OUT 
+			this.out.putNextEntry(newZE);
+			this.out.write(b);
+			this.out.closeEntry();
+		}catch(Exception e){e.printStackTrace();}
+		outTmp.close();
+		zipPar.close();
+		
+		final byte[] baTnp = boutTmp.toByteArray();
+		final ByteArrayInputStream baIntmp = new ByteArrayInputStream (baTnp);
+		zipPar = new ZipInputStream(baIntmp);
+		return zipPar;
+	}
+	
+	private void tearDown() { 
+		// TODO
 	}
 }
 

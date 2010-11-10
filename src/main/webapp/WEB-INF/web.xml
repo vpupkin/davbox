@@ -22,7 +22,7 @@
 		<servlet-class>net.sf.webdav.WebdavServlet</servlet-class>
 		<init-param>
 			<param-name>rootpath</param-name>
-			<param-value>/tmp/davtest/</param-value>
+			<param-value>gaevfs-0.3.zip</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ResourceHandlerImplementation</param-name>

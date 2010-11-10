@@ -18,6 +18,7 @@ package net.sf.webdav.methods;
 import java.io.IOException;
 import java.util.Hashtable;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -149,9 +150,10 @@ public class DoPut extends AbstractMethod {
                     doUserAgentWorkaround(resp);
 
                     // setting resourceContent
-                    long resourceLength = _store
-                            .setResourceContent(transaction, path, req
-                                    .getInputStream(), null, null);
+                    final ServletInputStream inTmp = req
+					        .getInputStream();
+					long resourceLength = _store
+                            .setResourceContent(transaction, path, inTmp, null, null);
 
                     so = _store.getStoredObject(transaction, path);
                     if (resourceLength != -1)
