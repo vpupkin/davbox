@@ -1,8 +1,13 @@
 package cc.co.llabor.dav.cache;
 
-import java.io.InputStream;
-import java.security.Principal;
+import java.io.File;
+import java.io.InputStream; 
+import java.util.Date;
+import java.util.Set;
 
+import cc.co.llabor.dav.AbstractTransactionalDaver;
+
+import net.sf.jsr107cache.Cache;
 import net.sf.webdav.ITransaction;
 import net.sf.webdav.IWebdavStore;
 import net.sf.webdav.StoredObject;
@@ -16,24 +21,17 @@ import net.sf.webdav.StoredObject;
  * 
  * Creation:  10.11.2010::15:18:15<br> 
  */
-public  class Cache4Dav implements IWebdavStore {
+public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavStore {
 
-	public ITransaction begin(Principal principal) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 10.11.2010");
-		else {
-		return null;
-		}
-	}
+	private File file;
+	Cache  store  = null;
 
-	public void checkAuthentication(ITransaction transaction) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 10.11.2010");
-		else {
-		}
-	}
-
-	public void commit(ITransaction transaction) {
+	public Cache4Dav(File filePar){
+		this.file = filePar; 
+		this.store = cc.co.llabor.cache.Manager.getCache(this.file.getName());		
+		 
+	}	
+	public void removeObject(ITransaction transaction, String uri) {
 		// TODO Auto-generated method stub
 		if (1==1)throw new RuntimeException("not yet implemented since 10.11.2010");
 		else {
@@ -46,20 +44,25 @@ public  class Cache4Dav implements IWebdavStore {
 		else {
 		}
 	}
-
 	public void createResource(ITransaction transaction, String resourceUri) {
 		// TODO Auto-generated method stub
 		if (1==1)throw new RuntimeException("not yet implemented since 10.11.2010");
 		else {
 		}
-	}
-
-	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
+	} 
+	
+	public long setResourceContent(ITransaction transaction,
+			String resourceUri, InputStream content, String contentType,
+			String characterEncoding) {
 		// TODO Auto-generated method stub
 		if (1==1)throw new RuntimeException("not yet implemented since 10.11.2010");
 		else {
-		return null;
+		return 0;
 		}
+	}
+ 
+	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
+		return  ( String[] )this.store.keySet().toArray(new String[]{});
 	}
 
 	public InputStream getResourceContent(ITransaction transaction,
@@ -79,36 +82,32 @@ public  class Cache4Dav implements IWebdavStore {
 		}
 	}
 
-	public StoredObject getStoredObject(ITransaction transaction, String uri) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 10.11.2010");
-		else {
-		return null;
+	public StoredObject getStoredObject(ITransaction transaction, String uri) { 
+		Set keysTmp = this.store.keySet(); 
+		KeySetObject retval = null;
+		if (!"/".equals(uri)) {
+			keysTmp = cc.co.llabor.cache.Manager.getCache(this.file.getName()+uri).keySet();
+			retval = new KeySetObject(keysTmp);
+			retval.setFolder(keysTmp.size()>1);
+			retval.setNullResource(false) ;
+			retval.setCreationDate(new Date());
+			retval.setLastModified(new Date());			
+		}else{
+			retval = new KeySetObject(keysTmp);
+			retval.setFolder(keysTmp.size()>1);
+			retval.setNullResource(false) ;
+			retval.setCreationDate(new Date());
+			retval.setLastModified(new Date());
 		}
+		
+		return retval; 
 	}
 
-	public void removeObject(ITransaction transaction, String uri) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 10.11.2010");
-		else {
-		}
-	}
 
-	public void rollback(ITransaction transaction) {
+	@Override
+	protected void tearDown() {
 		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 10.11.2010");
-		else {
-		}
-	}
-
-	public long setResourceContent(ITransaction transaction,
-			String resourceUri, InputStream content, String contentType,
-			String characterEncoding) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 10.11.2010");
-		else {
-		return 0;
-		}
+		 
 	}
 
 }

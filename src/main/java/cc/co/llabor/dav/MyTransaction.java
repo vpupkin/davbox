@@ -1,4 +1,4 @@
-package cc.co.llabor.dav.zip;
+package cc.co.llabor.dav;
 
 import java.security.Principal;
 

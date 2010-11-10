@@ -11,10 +11,22 @@
 		<load-on-startup>1</load-on-startup><!-- Must -->
 	</servlet>
 
+ 
+<!-- CacheWebDav - access to local Cache -->
 	<servlet>
-		<servlet-name>Jdav</servlet-name>
+		<servlet-name>CacheWebDav</servlet-name>
 		<servlet-class>cc.co.llabor.JdavServlet</servlet-class>
-	</servlet>
+		<init-param>
+			<description>cache-name</description>
+			<param-name>rootpath</param-name>
+			<param-value>SCRIPTSTORE</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ResourceHandlerImplementation</param-name>
+			<param-value>cc.co.llabor.dav.cache.Cache4Dav</param-value>
+		</init-param>
+	</servlet>	
+<!-- SfWebDav - access to gaevfs-0.3.zip -->
 	<servlet>
 		<servlet-name>SfWebDav</servlet-name>
 		<servlet-class>net.sf.webdav.WebdavServlet</servlet-class>
@@ -32,7 +44,10 @@
 		<servlet-name>authservlet</servlet-name>
 		<url-pattern>/auth</url-pattern>
 	</servlet-mapping>
-
+	<servlet-mapping>
+		<servlet-name>CacheWebDav</servlet-name>
+		<url-pattern>/cache/*</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>SfWebDav</servlet-name>
 		<url-pattern>/sfdav/*</url-pattern>
@@ -40,6 +55,16 @@
 	<security-constraint>
 		<web-resource-collection><web-resource-name>fffkk</web-resource-name>
 			<url-pattern>/sfdav/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+		<!-- basic auth 4 tc6.x! 
+			!!!comment it for GAE!!! -->
+	</security-constraint>	
+	<security-constraint>
+		<web-resource-collection><web-resource-name>fffkk</web-resource-name>
+			<url-pattern>/cache/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>admin</role-name>

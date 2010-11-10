@@ -5,13 +5,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File; 
 import java.io.IOException;
 import java.io.InputStream; 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date; 
 import java.util.List;
 import java.util.zip.ZipEntry; 
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import cc.co.llabor.dav.AbstractTransactionalDaver;
 
 
 import net.sf.webdav.ITransaction;
@@ -27,33 +28,9 @@ import net.sf.webdav.StoredObject;
  * 
  * Creation:  07.10.2010::18:18:04<br> 
  */
-public class Zip4Dav implements IWebdavStore {
+public class Zip4Dav extends AbstractTransactionalDaver implements IWebdavStore {
 	 
-	private File file;
-	private MyTransaction transaction;
- 
-
-	public ITransaction begin(Principal principal) {
-		if (principal == null) return null; // no principal - no transaction
-		if (this.transaction  == null){
-			//setUp();
-			this.transaction = new MyTransaction(principal);
-		} 			
-		else
-			throw new RuntimeException("started transaction is not finished!");
-		return transaction; 
-	}
-
-	public void checkAuthentication(ITransaction transaction) {
-		// ok 
-	}
-
-	public void commit(ITransaction transaction) {
-		tearDown(); 
-		this.transaction = null; 
-	}
-
-
+	private File file; 
 
 	public void createFolder(ITransaction transaction, String folderUri) {
  
@@ -107,15 +84,6 @@ public class Zip4Dav implements IWebdavStore {
 		return newE.getSize();
 	}	
 	
-	/**
-	 * @author vipup
-	 * @param transaction
-	 */
-	private void checkTR(ITransaction transaction) {
-		if (transaction == null) return; // TODO for read-only is not a problem
-		if (this.transaction != transaction) throw new RuntimeException("started transaction is not the same with given!" +this.transaction +"!="+transaction );
-	}
-
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
 		List<String> childList = new ArrayList<String>();
 		ZipInputStream in = getInZip(); 
@@ -230,14 +198,6 @@ public class Zip4Dav implements IWebdavStore {
 		}
 	}
 
-	public void rollback(ITransaction transaction) {
-		tearDown();
-		this.transaction = null; 
-		
-	}
-
-
-
 	public Zip4Dav(File e){
 		this.file = e;
 		setUp(); 
@@ -317,7 +277,7 @@ public class Zip4Dav implements IWebdavStore {
 		return zipPar;
 	}
 	
-	private void tearDown() { 
+	protected void tearDown() { 
 		// TODO
 	}
 }
