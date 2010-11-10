@@ -20,10 +20,14 @@ public class Manager {
 	
 	static{
 		 // try to load default cache conf
-		 if (System.getProperty("com.google.appengine.runtime.version")==null){
+		 Object gooTmp = null;
+		 try{
+			 gooTmp = System.getProperty("com.google.appengine.runtime.version");
+		 }catch(Throwable e){e.printStackTrace();}
+		 if (gooTmp==null){
 			 //net.sf.jsr107cache.CacheFactory=ws.rrd.cache.BasicCacheFactory
 			 try{
-				 java.io.InputStream in = MemoryFileCache.class.getClassLoader().getResourceAsStream("jcache.properties");
+				 java.io.InputStream in = MemoryFileCache.class.getClassLoader().getResourceAsStream("META-INF/services/net.sf.jsr107cache.CacheFactory");
 				 Properties prTmp = new Properties();
 				 prTmp.load(in);
 				 String key = "net.sf.jsr107cache.CacheFactory";

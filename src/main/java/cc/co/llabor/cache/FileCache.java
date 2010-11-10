@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -198,8 +199,21 @@ public class FileCache implements Cache {
 
 	
 	public Set keySet() {
-		Set<String> retval = new HashSet<String> ();
-		retval .addAll( Arrays.asList( this.basedir .list() )) ;
+		Set<File> retval = new HashSet<File> ();
+		String[] listTmp =  null; 
+		listTmp = this.basedir .list(); 
+		for (String fNameTmp :listTmp )
+		try{
+			File nextTmp = new File (fNameTmp);
+			retval.add(nextTmp);
+			System.out.println("+"+fNameTmp);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			this.put(".placeholder", "."+System.currentTimeMillis());
+			return keySet() ; //repeat if empty 
+		}
+ 
 		return retval;
 	}
 

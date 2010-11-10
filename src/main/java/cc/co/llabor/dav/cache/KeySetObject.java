@@ -20,8 +20,9 @@ public class KeySetObject extends StoredObject {
 
 	public KeySetObject(Set keysTmp) {
 		this.keys = keysTmp; 
-		this.setFolder(keysTmp.size()>1);
 		this.setNullResource(false) ;
+		this.setFolder(true);
+		
 		this.setCreationDate(new Date());
 		this.setLastModified(new Date());
 		
