@@ -7,9 +7,7 @@
 	<servlet>
 		<description>User Authentication in Java</description>
 		<servlet-name>authservlet</servlet-name>
-		<servlet-class>
-			cc.co.llabor.httpauth.BaseAuth
-		</servlet-class>
+		<servlet-class>cc.co.llabor.httpauth.BaseAuth</servlet-class>
 		<load-on-startup>1</load-on-startup><!-- Must -->
 	</servlet>
 
@@ -29,39 +27,40 @@
 			<param-value>cc.co.llabor.dav.zip.Zip4Dav</param-value>
 		</init-param>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>authservlet</servlet-name>
 		<url-pattern>/auth</url-pattern>
-	</servlet-mapping>	
-		
+	</servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>SfWebDav</servlet-name>
 		<url-pattern>/sfdav/*</url-pattern>
 	</servlet-mapping>
 	<security-constraint>
-		<web-resource-collection>
+		<web-resource-collection><web-resource-name>fffkk</web-resource-name>
 			<url-pattern>/sfdav/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>admin</role-name>
 		</auth-constraint>
-	<!-- basic auth 4 tc6.x! 
-	!!!comment it for GAE!!! --></security-constraint>
-         
- <login-config>
-    <auth-method>BASIC</auth-method>
-    <realm-name>Dav Tomcat Supported Realm</realm-name>
-  </login-config>
- 	
-	 <error-page>
-        <error-code>500</error-code>
-        <location>/errors/servererror.jsp</location>
-    </error-page> 
-	 <error-page>
-        <error-code>403</error-code>
-        <location>/errors/usererror.jsp</location>
-    </error-page> 	
+		<!-- basic auth 4 tc6.x! 
+			!!!comment it for GAE!!! -->
+	</security-constraint>
+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>Dav Tomcat Supported Realm</realm-name>
+	</login-config>
+
+	<error-page>
+		<error-code>500</error-code>
+		<location>/errors/servererror.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/errors/usererror.jsp</location>
+	</error-page>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>

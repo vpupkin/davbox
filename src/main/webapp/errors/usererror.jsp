@@ -21,7 +21,7 @@ if (request.getUserPrincipal() != null) {
 	   <br>
 	   Hi <%=request.getUserPrincipal()%>!.<br>
 	   You can <a href= "<%=userService.createLogoutURL(thisURL) %>">sign out.</a> and login with another account.</p> 
-	   If you think something wrong  - contact with your Admin.</p> 
+	   <p> If you think something wrong  - contact with your Admin.</p> 
 <%
 }else{ 
 	request.getSession().setAttribute("req_url", ""+request.getRequestURI());
