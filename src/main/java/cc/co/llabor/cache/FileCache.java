@@ -3,6 +3,7 @@ package cc.co.llabor.cache;
 import gnu.inet.encoding.Punycode;
 import gnu.inet.encoding.PunycodeException;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -127,7 +128,8 @@ public class FileCache implements Cache {
 			if ((""+key).endsWith(".properties")){
 				retval = new Properties();
 				((Properties)retval).load(fis);
-
+			}else if ((""+key).endsWith(".js") || (""+key).endsWith(".xml")  ){
+				retval = fis;
 			}else{
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				retval = ois.readObject();		
@@ -204,7 +206,7 @@ public class FileCache implements Cache {
 		listTmp = this.basedir .list(); 
 		for (String fNameTmp :listTmp )
 		try{
-			File nextTmp = new File (fNameTmp);
+			File nextTmp = new File ( this.basedir, fNameTmp);
 			retval.add(nextTmp);
 			System.out.println("+"+fNameTmp);
 			

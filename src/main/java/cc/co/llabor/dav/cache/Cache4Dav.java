@@ -74,7 +74,10 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 	}
  
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
-		final Set<File> fileKeySet = this.store.keySet();
+		final String cacheNameTmp = this.file.getName()+folderUri;
+		final Cache cacheTmp = cc.co.llabor.cache.Manager.getCache(cacheNameTmp);
+ 
+		final Set<File> fileKeySet = cacheTmp.keySet();	
 		final Set<String> retval = new HashSet<String>();
 		for(File nTmp :fileKeySet){
 			String nameTmp = nTmp.getName();
@@ -86,7 +89,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 	public InputStream getResourceContent(ITransaction transaction,
 			String resourceUri) {
 		Object o = store.get(resourceUri.substring(1));
-		InputStream retval = new ByteArrayInputStream((""+o).getBytes());
+		InputStream retval = null;
+		retval = o  instanceof InputStream ? (InputStream)o:	new ByteArrayInputStream((""+o).getBytes());
 		return retval;
 	}
 
@@ -98,25 +102,37 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		}
 	}
 
-	public StoredObject getStoredObject(ITransaction transaction, String uri) { 
-		
+	public StoredObject getStoredObject(ITransaction transaction, String uri) {  
 		StoredObject retval = null;
 		uri = (""+"").equals( uri )? "/":uri;
 		try{
+			Object valTmp = store.get(uri.substring(1));
+			if (valTmp != null){
+				retval = new StoredObject();
+				retval.setFolder(false);
+				retval.setResourceLength(111);
+				retval.setLastModified(new Date());
+				retval.setCreationDate( new Date());
+				return retval;
+			}
 			Set keysTmp = null;
-			if (!"/".equals(uri)) {
-				keysTmp = this.store.keySet(); 
-				final File file2checkTmp = new File(uri.substring(1));
+			final String cacheNameTmp = this.file.getName()+uri;
+			final Cache cacheTmp = cc.co.llabor.cache.Manager.getCache(cacheNameTmp);
+			keysTmp = cacheTmp.keySet();			
+			if (!"/".equals(uri)) { 
+				File setBase = ((File)keysTmp.toArray()[0]).getParentFile();
+				File file2checkTmp = new File(setBase,uri.substring(1));
+				
 				if (keysTmp.contains(file2checkTmp)){
-					if (file2checkTmp.isDirectory()){
-						final String cacheNameTmp = this.file.getName()+uri;
-						final Cache cacheTmp = cc.co.llabor.cache.Manager.getCache(cacheNameTmp);
-						keysTmp = cacheTmp.keySet();
-						retval = new KeySetObject(keysTmp);
-						retval.setFolder(keysTmp.size()>1);
-						retval.setNullResource(false) ;
-						retval.setCreationDate(new Date());
-						retval.setLastModified(new Date());									
+					// stupid search
+					for (File f:(Set<File>)keysTmp){
+						if (f.getName().equals(file2checkTmp.getName())){
+							file2checkTmp = f;
+							break;
+						} 	
+					}
+					if (file2checkTmp. isDirectory()){ 
+						retval = new KeySetObject(keysTmp);// IS DIRECTORTY! 								
 					}else{ // YAHOO! - founde the url as plain file
 						retval = new StoredObject();
 						retval.setFolder(false);
@@ -126,6 +142,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 						retval.setCreationDate(new Date());
 						retval.setLastModified(new Date());								
 					}
+				}else{
+					retval = new KeySetObject(keysTmp);
 				}
 				 
 			}else{
@@ -136,6 +154,12 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				//retval.setLastModified(new Date());
 			}
 		}catch(NullPointerException e){
+			retval = new StoredObject ();
+			retval.setFolder(false);
+			retval.setNullResource(true) ;
+			retval.setCreationDate(new Date());
+			retval.setLastModified(new Date());		 
+		}catch(java.lang.ArrayIndexOutOfBoundsException e){
 			retval = new StoredObject ();
 			retval.setFolder(false);
 			retval.setNullResource(true) ;
