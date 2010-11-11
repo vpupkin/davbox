@@ -12,6 +12,7 @@ import java.util.Set;
 import cc.co.llabor.dav.AbstractTransactionalDaver;
 
 import net.sf.jsr107cache.Cache;
+import net.sf.jsr107cache.CacheManager;
 import net.sf.webdav.ITransaction;
 import net.sf.webdav.IWebdavStore;
 import net.sf.webdav.StoredObject;
@@ -116,8 +117,9 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				return retval;
 			}
 			Set keysTmp = null;
-			final String cacheNameTmp = this.file.getName()+uri;
-			final Cache cacheTmp = cc.co.llabor.cache.Manager.getCache(cacheNameTmp);
+			String cacheNameTmp = this.file.getName()+uri;
+			cacheNameTmp = cacheNameTmp .substring(0,cacheNameTmp .lastIndexOf("/"));
+			final Cache cacheTmp = cc.co.llabor.cache.Manager.getCache(cacheNameTmp, false);
 			keysTmp = cacheTmp.keySet();			
 			if (!"/".equals(uri)) { 
 				File setBase = ((File)keysTmp.toArray()[0]).getParentFile();

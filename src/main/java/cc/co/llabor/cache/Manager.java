@@ -53,11 +53,15 @@ public class Manager {
 
 	public static Cache getCache(String cacheNS)   { 
 		
+		return getCache( cacheNS, true) ;
+	}
+
+	public static Cache getCache(String cacheNS, boolean createIfNotExists) {
 		if (cacheNS == null)return getCache("DEFAULT");
 		
 		CacheManager cm = CacheManager.getInstance();
 		Cache retval = cm.getCache (cacheNS);
-		if (retval == null)
+		if (retval == null && createIfNotExists)
 		synchronized (CacheManager.class) { 
 			if (retval == null)
 			try {
