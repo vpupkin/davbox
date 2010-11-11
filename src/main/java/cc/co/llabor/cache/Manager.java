@@ -1,5 +1,7 @@
 package cc.co.llabor.cache;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Properties;
  
 
@@ -31,7 +33,15 @@ public class Manager {
 				 //net.sf.jsr107cache.CacheFactory=ws.rrd.cache.BasicCacheFactory
 				 try{
 					 //java.io.InputStream in = MemoryFileCache.class.getClassLoader().getResourceAsStream("META-INF/services/net.sf.jsr107cache.CacheFactory");
-					 java.io.InputStream in = MemoryFileCache.class.getClassLoader().getResourceAsStream("jcache.properties");
+					 //java.io.InputStream in = MemoryFileCache.class.getClassLoader().getResourceAsStream("jcache.properties");
+					 String fNameTmp = MemoryFileCache.class.getClassLoader().getResource("META-INF/services/!net.sf.jsr107cache.CacheFactory").toString();
+					 fNameTmp = fNameTmp.replace("%20", " ");
+					 fNameTmp = fNameTmp.replace("file:/", "");
+					 //if (myNewCacheSettings.exists())
+					 File myNewCacheSettings = new File (fNameTmp) ;
+					 File newFile4Cfg = new File(fNameTmp.replace("s/!ne", "s/ne"));
+					 myNewCacheSettings.renameTo(newFile4Cfg);
+					 java.io.InputStream in = new FileInputStream(newFile4Cfg);
 					 Properties prTmp = new Properties();
 					 prTmp.load(in);
 					 String key = "net.sf.jsr107cache.CacheFactory";
