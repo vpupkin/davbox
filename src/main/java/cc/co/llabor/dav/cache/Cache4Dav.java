@@ -36,10 +36,14 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		this.store = cc.co.llabor.cache.Manager.getCache(this.file.getName());		
 		 
 	}	
-	public void removeObject(ITransaction transaction, String uri) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 10.11.2010");
-		else {
+	public void removeObject(ITransaction transaction, String uri) { 
+		try{
+			File toDel = new File( ((File)store.keySet().toArray()[0]).getCanonicalFile().getParentFile() ,uri); 
+			System.out.println("<delete><file name=\'"+toDel.getAbsolutePath()+"\'/>... ");
+			toDel.delete();
+			System.out.println("</delete>");
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -126,7 +130,14 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				File setBase = ((File)store.keySet().toArray()[0]).getParentFile();
 				File file2checkTmp = new File(setBase,uri.substring(1));  
 					if (file2checkTmp. isDirectory()){ 
-						retval = new KeySetObject(keysTmp);// IS DIRECTORTY! 								
+						retval = new KeySetObject(keysTmp);// IS DIRECTORTY!
+					}else if (file2checkTmp. exists()){ 
+						// feel file
+						retval = new StoredObject ();
+						retval.setNullResource(false) ;
+						retval.setFolder(false);
+						retval.setCreationDate(new Date());
+						retval.setLastModified(new Date());								
 					}else{ // looks like new resouce have to be created
 						return null;							
 					}  
