@@ -154,25 +154,13 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				//retval.setLastModified(new Date());
 			}
 		}catch(NullPointerException e){
-			retval = new StoredObject ();
-			retval.setFolder(false);
-			retval.setNullResource(true) ;
-			retval.setCreationDate(new Date());
-			retval.setLastModified(new Date());		 
+			retval = null;	  // have to be created!
+			return retval;
 		}catch(java.lang.ArrayIndexOutOfBoundsException e){
-			retval = new StoredObject ();
-			retval.setFolder(false);
-			retval.setNullResource(true) ;
-			retval.setCreationDate(new Date());
-			retval.setLastModified(new Date());						
+			retval = null;					
 		}catch(StringIndexOutOfBoundsException e){
-			retval = new StoredObject ();
-			retval.setFolder(false);
-			retval.setNullResource(true) ;
-			retval.setCreationDate(new Date());
-			retval.setLastModified(new Date());						
-		}
-		
+			retval = null;				
+		} 
 		if (retval == null){ // TO NULLOBJ
 			retval = new StoredObject ();
 			retval.setFolder(false);
