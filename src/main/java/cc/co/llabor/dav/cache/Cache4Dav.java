@@ -44,10 +44,9 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 	}
 
 	public void createFolder(ITransaction transaction, String folderUri) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 10.11.2010");
-		else {
-		}
+		String subCacheNameTmp = this.file.getName()+folderUri;
+		final Cache cacheTmp = cc.co.llabor.cache.Manager.getCache(subCacheNameTmp, true);
+		System.out.println("cache/dir created: {"+subCacheNameTmp+"}  -->["+cacheTmp+"]");
 	}
 	public void createResource(ITransaction transaction, String resourceUri) {
 		store.put(resourceUri.substring(1), "@created"+System.currentTimeMillis()+"...");
@@ -118,36 +117,25 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 			}
 			Set keysTmp = null;
 			String cacheNameTmp = this.file.getName()+uri;
-			cacheNameTmp = cacheNameTmp .substring(0,cacheNameTmp .lastIndexOf("/"));
+			cacheNameTmp = cacheNameTmp.endsWith("/")? cacheNameTmp .substring(0,cacheNameTmp .lastIndexOf("/")):cacheNameTmp ;
 			final Cache cacheTmp = cc.co.llabor.cache.Manager.getCache(cacheNameTmp, false);
-			keysTmp = cacheTmp.keySet();			
-			if (!"/".equals(uri)) { 
-				File setBase = ((File)keysTmp.toArray()[0]).getParentFile();
-				File file2checkTmp = new File(setBase,uri.substring(1));
-				
-				if (keysTmp.contains(file2checkTmp)){
-					// stupid search
-					for (File f:(Set<File>)keysTmp){
-						if (f.getName().equals(file2checkTmp.getName())){
-							file2checkTmp = f;
-							break;
-						} 	
-					}
+			try{
+				keysTmp = cacheTmp.keySet();
+			}catch(Exception e){e.printStackTrace();}
+			if (!"/".equals(uri)) { // file or DIR?
+				File setBase = ((File)store.keySet().toArray()[0]).getParentFile();
+				File file2checkTmp = new File(setBase,uri.substring(1));  
 					if (file2checkTmp. isDirectory()){ 
 						retval = new KeySetObject(keysTmp);// IS DIRECTORTY! 								
 					}else{ // YAHOO! - founde the url as plain file
 						retval = new StoredObject();
 						retval.setFolder(false);
-						String cachedO = ""+store.get(uri.substring(1));
+						String cachedO = ""+""+store.get(uri.substring(1));
 						retval.setResourceLength(cachedO.length());
 						retval.setNullResource(false) ;
 						retval.setCreationDate(new Date());
 						retval.setLastModified(new Date());								
-					}
-				}else{
-					retval = new KeySetObject(keysTmp);
-				}
-				 
+					}  
 			}else{
 				retval = new KeySetObject(keysTmp);
 				//retval.setFolder(true); // ROOT! - all done by KeySetObject
