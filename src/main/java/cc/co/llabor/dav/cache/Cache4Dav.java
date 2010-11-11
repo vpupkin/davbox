@@ -127,14 +127,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				File file2checkTmp = new File(setBase,uri.substring(1));  
 					if (file2checkTmp. isDirectory()){ 
 						retval = new KeySetObject(keysTmp);// IS DIRECTORTY! 								
-					}else{ // YAHOO! - founde the url as plain file
-						retval = new StoredObject();
-						retval.setFolder(false);
-						String cachedO = ""+""+store.get(uri.substring(1));
-						retval.setResourceLength(cachedO.length());
-						retval.setNullResource(false) ;
-						retval.setCreationDate(new Date());
-						retval.setLastModified(new Date());								
+					}else{ // looks like new resouce have to be created
+						return null;							
 					}  
 			}else{
 				retval = new KeySetObject(keysTmp);
