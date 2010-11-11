@@ -1,6 +1,7 @@
 package cc.co.llabor.cache;
 
 import java.util.Properties;
+ 
 
 import net.sf.jsr107cache.Cache;
 import net.sf.jsr107cache.CacheException;
@@ -24,19 +25,28 @@ public class Manager {
 		 try{
 			 gooTmp = System.getProperty("com.google.appengine.runtime.version");
 		 }catch(Throwable e){e.printStackTrace();}
-		 if (gooTmp==null){
-			 //net.sf.jsr107cache.CacheFactory=ws.rrd.cache.BasicCacheFactory
-			 try{
-				 java.io.InputStream in = MemoryFileCache.class.getClassLoader().getResourceAsStream("META-INF/services/net.sf.jsr107cache.CacheFactory");
-				 Properties prTmp = new Properties();
-				 prTmp.load(in);
-				 String key = "net.sf.jsr107cache.CacheFactory";
-				 String val = prTmp.getProperty(key);
-				 System.clearProperty( key );
-			 }catch(Exception e){
-				 e.printStackTrace();
-			 } 
-		 }		
+		 
+		 try{
+			 if (gooTmp==null){
+				 //net.sf.jsr107cache.CacheFactory=ws.rrd.cache.BasicCacheFactory
+				 try{
+					 //java.io.InputStream in = MemoryFileCache.class.getClassLoader().getResourceAsStream("META-INF/services/net.sf.jsr107cache.CacheFactory");
+					 java.io.InputStream in = MemoryFileCache.class.getClassLoader().getResourceAsStream("jcache.properties");
+					 Properties prTmp = new Properties();
+					 prTmp.load(in);
+					 String key = "net.sf.jsr107cache.CacheFactory";
+					 String val = prTmp.getProperty(key);
+					 System.out.println(key +" = "+val);
+					 System.out.println("cleaning "+key+" == {" +System.clearProperty( key )+"}");
+				 }catch(Exception e){
+					 e.printStackTrace();
+				 } 
+			 }else{
+				 System.out.println("GAE v"+gooTmp+ " CM="+CacheManager.getInstance());
+			 }
+		 }catch(Throwable e){
+			 e.printStackTrace();
+		 }
 	}
       	
 	
@@ -61,7 +71,8 @@ public class Manager {
 		
 		CacheManager cm = CacheManager.getInstance();
 		Cache retval = cm.getCache (cacheNS);
-		if (retval == null && createIfNotExists)
+		boolean isGAE = null != System.getProperty("com.google.appengine.runtime.version");
+		if ( ( retval == null && ( isGAE || createIfNotExists ) )) // for GAE - always create
 		synchronized (CacheManager.class) { 
 			if (retval == null)
 			try {

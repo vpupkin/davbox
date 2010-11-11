@@ -49,6 +49,10 @@
 		<url-pattern>/cache/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
+		<servlet-name>CacheWebDav</servlet-name>
+		<url-pattern>/ca/*</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
 		<servlet-name>SfWebDav</servlet-name>
 		<url-pattern>/sfdav/*</url-pattern>
 	</servlet-mapping>

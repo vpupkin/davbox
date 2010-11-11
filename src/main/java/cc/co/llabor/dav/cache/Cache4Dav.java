@@ -5,13 +5,16 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream; 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import cc.co.llabor.dav.AbstractTransactionalDaver;
 
 import net.sf.jsr107cache.Cache;
+import net.sf.jsr107cache.CacheListener;
 import net.sf.jsr107cache.CacheManager;
 import net.sf.webdav.ITransaction;
 import net.sf.webdav.IWebdavStore;
@@ -26,10 +29,11 @@ import net.sf.webdav.StoredObject;
  * 
  * Creation:  10.11.2010::15:18:15<br> 
  */
-public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavStore {
+public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavStore, CacheListener {
 
 	private File file;
 	Cache  store  = null;
+	List<String> storeKeys = new ArrayList<String>();
 
 	public Cache4Dav(File filePar){
 		this.file = filePar; 
@@ -80,12 +84,18 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
 		final String cacheNameTmp = this.file.getName()+folderUri;
 		final Cache cacheTmp = cc.co.llabor.cache.Manager.getCache(cacheNameTmp);
- 
-		final Set<File> fileKeySet = cacheTmp.keySet();	
 		final Set<String> retval = new HashSet<String>();
-		for(File nTmp :fileKeySet){
-			String nameTmp = nTmp.getName();
-			retval.add(nameTmp);
+		cacheTmp.addListener(this);
+		try{
+			final Set<File> fileKeySet = cacheTmp.keySet();	
+			for(File nTmp :fileKeySet){
+				String nameTmp = nTmp.getName();
+				retval.add(nameTmp);
+			}
+		}catch(UnsupportedOperationException e){
+			// TODO GAE - empty list 
+			e.printStackTrace();
+			retval.addAll(storeKeys);
 		}
 		return  retval.toArray(new String[]{});
 	}
@@ -108,8 +118,13 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 
 	public StoredObject getStoredObject(ITransaction transaction, String uri) {  
 		StoredObject retval = null;
+		Set keysTmp = null;
 		uri = (""+"").equals( uri )? "/":uri;
 		try{
+			if ("/".equals(uri)){
+				retval = new KeySetObject(keysTmp);
+				return retval;
+			}
 			Object valTmp = store.get(uri.substring(1));
 			if (valTmp != null){
 				retval = new StoredObject();
@@ -119,13 +134,18 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				retval.setCreationDate( new Date());
 				return retval;
 			}
-			Set keysTmp = null;
+			
 			String cacheNameTmp = this.file.getName()+uri;
 			cacheNameTmp = cacheNameTmp.endsWith("/")? cacheNameTmp .substring(0,cacheNameTmp .lastIndexOf("/")):cacheNameTmp ;
 			final Cache cacheTmp = cc.co.llabor.cache.Manager.getCache(cacheNameTmp, false);
 			try{
 				keysTmp = cacheTmp.keySet();
-			}catch(Exception e){e.printStackTrace();}
+			}catch(java.lang.UnsupportedOperationException e){
+				e.printStackTrace();
+				cacheTmp.put(uri.substring(1), ""+System.currentTimeMillis());
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 			if (!"/".equals(uri)) { // file or DIR?
 				File setBase = ((File)store.keySet().toArray()[0]).getParentFile();
 				File file2checkTmp = new File(setBase,uri.substring(1));  
@@ -141,18 +161,18 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 					}else{ // looks like new resouce have to be created
 						return null;							
 					}  
-			}else{
-				retval = new KeySetObject(keysTmp);
-				//retval.setFolder(true); // ROOT! - all done by KeySetObject
-				//retval.setNullResource(false) ;
-				//retval.setCreationDate(new Date());
-				//retval.setLastModified(new Date());
-			}
+			} 
 		}catch(NullPointerException e){
 			retval = null;	  // have to be created!
 			return retval;
 		}catch(java.lang.ArrayIndexOutOfBoundsException e){
-			retval = null;					
+			retval = null;	 
+		}catch(java.lang.UnsupportedOperationException e){ // GAE not support LIST_of_cache
+			store.put(uri.substring(1), ""+System.currentTimeMillis());
+			storeKeys.add(uri.substring(1));
+			retval.setNullResource(false) ;
+			retval.setCreationDate(new Date());
+			retval.setLastModified(new Date());			
 		}catch(StringIndexOutOfBoundsException e){
 			retval = null;				
 		} 
@@ -172,6 +192,23 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 	protected void tearDown() {
 		// TODO Auto-generated method stub
 		 
+	}
+	public void onClear() {
+		System.out.println("onClear");
+	}
+	public void onEvict(Object key) {
+		System.out.println("onEvict"+key);
+	}
+	public void onLoad(Object key) {
+		System.out.println("onLoad"+key);
+	}
+	public void onPut(Object key) {
+		System.out.println("onPut"+key);
+		storeKeys.add(""+key);
+	}
+	public void onRemove(Object key) {
+		System.out.println("onRemove"+key);
+		storeKeys.remove( ""+key);
 	}
 
 }
