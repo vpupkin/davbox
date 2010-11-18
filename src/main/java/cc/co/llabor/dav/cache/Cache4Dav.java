@@ -2,6 +2,7 @@ package cc.co.llabor.dav.cache;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream; 
@@ -63,22 +64,22 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 	public long setResourceContent(ITransaction transaction,
 			String resourceUri, InputStream content, String contentType,
 			String characterEncoding) {
-		StringBuffer sb = new StringBuffer();
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		byte[] retval = null;
 		try{
 			int bufSize = content.available();
 			bufSize = bufSize == 0? 4096:bufSize; 
 			byte[] buf = new byte[bufSize];
 			
 			for (int readed = content.read(buf);readed>0;readed = content.read(buf)){
-				String strTmp = new String(buf, 0, readed);
-				sb.append(strTmp);
+				bout.write(buf, 0, readed); 
 			}
-			Object value = sb.toString() ;
-			store.put(resourceUri.substring(1), value );
+			retval = bout.toByteArray() ;
+			store.put(resourceUri.substring(1), retval );
 		}catch(IOException  e){
 			e.printStackTrace();
 		}
-		return sb.length();
+		return retval == null?-1:retval.length;
 	}
  
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
@@ -104,7 +105,9 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 			String resourceUri) {
 		Object o = store.get(resourceUri.substring(1));
 		InputStream retval = null;
-		retval = o  instanceof InputStream ? (InputStream)o:	new ByteArrayInputStream((""+o).getBytes());
+		retval = (o  instanceof byte[]) ?	new ByteArrayInputStream((byte[])o):null;
+		retval = retval == null? (o  instanceof InputStream) ? (InputStream)o:	new ByteArrayInputStream((""+o).getBytes()):retval;
+		
 		return retval;
 	}
 

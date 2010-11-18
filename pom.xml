@@ -132,6 +132,12 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!--  cc\co\llabor\cachefs\0.0.1-SNAPSHOT -->
+	<dependency>
+      <groupId>cc.co.llabor</groupId>
+      <artifactId>cachefs</artifactId>
+      <version>0.0.3</version>
+    </dependency>
 <dependency>
     <groupId>net.sourceforge.htmlunit</groupId>
     <artifactId>htmlunit</artifactId>
