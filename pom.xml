@@ -11,7 +11,7 @@
 		<site>
 			<id>davrepo.gae</id>
 			<url>
-				dav:https://davrepo.appspot.com/ca/${pom.groupId}/${pom.artifactId}
+				dav:http://localhost:9090/jdav/ca/${pom.groupId}/${pom.artifactId}
 			</url>
 		</site>
 	</distributionManagement>
