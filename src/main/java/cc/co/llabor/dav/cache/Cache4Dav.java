@@ -169,7 +169,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 			retval = null;	  // have to be created!
 			return retval;
 		}catch(java.lang.ArrayIndexOutOfBoundsException e){
-			retval = null;	 
+			retval = null;	 // have to be created!
+			return retval; 
 		}catch(java.lang.UnsupportedOperationException e){ // GAE not support LIST_of_cache
 			store.put(uri.substring(1), ""+System.currentTimeMillis());
 			storeKeys.add(uri.substring(1));
