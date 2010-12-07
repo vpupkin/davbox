@@ -132,7 +132,10 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 			if (valTmp != null){
 				retval = new StoredObject();
 				retval.setFolder(false);
-				retval.setResourceLength(111);
+				int lenTmp = 111;
+				if (valTmp instanceof byte[]) lenTmp = ((byte[])valTmp).length;
+				if (valTmp instanceof String) lenTmp = ((String)valTmp).length();
+				retval.setResourceLength(lenTmp); 
 				retval.setLastModified(new Date());
 				retval.setCreationDate( new Date());
 				return retval;
