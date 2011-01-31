@@ -1,6 +1,5 @@
 package cc.co.llabor.dav.cache;
-
-import java.io.BufferedReader;
+ 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -12,11 +11,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import cc.co.llabor.cache.Manager;
 import cc.co.llabor.dav.AbstractTransactionalDaver;
 
 import net.sf.jsr107cache.Cache;
-import net.sf.jsr107cache.CacheListener;
-import net.sf.jsr107cache.CacheManager;
+import net.sf.jsr107cache.CacheListener; 
 import net.sf.webdav.ITransaction;
 import net.sf.webdav.IWebdavStore;
 import net.sf.webdav.StoredObject;
@@ -38,7 +37,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 
 	public Cache4Dav(File filePar){
 		this.file = filePar; 
-		this.store = cc.co.llabor.cache.Manager.getCache(this.file.getName());		
+		this.store = Manager.getCache(this.file.getName());		
 		 
 	}	
 	public void removeObject(ITransaction transaction, String uri) { 
@@ -54,7 +53,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 
 	public void createFolder(ITransaction transaction, String folderUri) {
 		String subCacheNameTmp = this.file.getName()+folderUri;
-		final Cache cacheTmp = cc.co.llabor.cache.Manager.getCache(subCacheNameTmp, true);
+		final Cache cacheTmp = Manager.getCache(subCacheNameTmp, true);
 		System.out.println("cache/dir created: {"+subCacheNameTmp+"}  -->["+cacheTmp+"]");
 	}
 	public void createResource(ITransaction transaction, String resourceUri) {
@@ -84,7 +83,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
  
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
 		final String cacheNameTmp = this.file.getName()+folderUri;
-		final Cache cacheTmp = cc.co.llabor.cache.Manager.getCache(cacheNameTmp);
+		final Cache cacheTmp = Manager.getCache(cacheNameTmp);
 		final Set<String> retval = new HashSet<String>();
 		cacheTmp.addListener(this);
 		try{
@@ -143,7 +142,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 			
 			String cacheNameTmp = this.file.getName()+uri;
 			cacheNameTmp = cacheNameTmp.endsWith("/")? cacheNameTmp .substring(0,cacheNameTmp .lastIndexOf("/")):cacheNameTmp ;
-			final Cache cacheTmp = cc.co.llabor.cache.Manager.getCache(cacheNameTmp, false);
+			final Cache cacheTmp = Manager.getCache(cacheNameTmp, false);
 			try{
 				keysTmp = cacheTmp.keySet();
 			}catch(java.lang.UnsupportedOperationException e){
