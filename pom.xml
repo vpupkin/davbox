@@ -5,8 +5,17 @@
 	<groupId>cc.co.llabor</groupId>
 	<artifactId>jdav</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<description></description>
+	<name>DavBox</name>
+	<description>provide the basic WebDav functionality for CacheFSs..</description>
 	<packaging>war</packaging>
+	<distributionManagement>
+		<site>
+			<id>davrepo.gae</id>
+			<url>
+				dav:http://localhost:9090/jdav/ca/${pom.groupId}/${pom.artifactId}
+			</url>
+		</site>
+	</distributionManagement>
 	<properties>
 		<slf4j.version>1.5.8</slf4j.version>
 		<jetty.version>6.1.22</jetty.version>
@@ -24,6 +33,38 @@
 		<gae.port>8888</gae.port>
 	</properties>
 	<build>
+		<extensions>
+		 <!--  dav:https://da -->
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav</artifactId>
+				<version>1.0-beta-2</version>
+			</extension>		
+		
+			<extension>
+				<groupId>com.google.code.maven-svn-wagon</groupId>
+				<artifactId>maven-svn-wagon</artifactId>
+				<version>1.2</version>
+			</extension>
+
+			<!--  http://code.google.com/p/maven-googlecode-plugin/wiki/MavenSiteDeployOnSVN  -->
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-scm</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.scm</groupId>
+				<artifactId>maven-scm-manager-plexus</artifactId>
+				<version>1.0</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.scm</groupId>
+				<artifactId>maven-scm-provider-svnexe</artifactId>
+				<version>1.0</version>
+			</extension>
+		</extensions>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -32,7 +73,7 @@
 					<source>1.5</source>
 					<target>1.5</target>
 				</configuration>
-			</plugin>		
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
@@ -119,37 +160,44 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>
-				 <version>1.0</version>
+				<version>1.0</version>
 				<configuration>
 					<!-- 
 						<server>myserver</server>
 						<url>http://10.2.212.205:8080/manager</url>
 					-->
 					<server>mypc</server>
-					<url>http://localhost:9090/manager</url> 
+					<url>http://localhost:9090/manager</url>
 				</configuration>
-			</plugin>			
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- jdo -->
+		<dependency>
+			<groupId>cc.co.llabor</groupId>
+			<artifactId>jdo</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		
 		<!--  cc\co\llabor\cachefs\0.0.1-SNAPSHOT -->
-	<dependency>
-      <groupId>cc.co.llabor</groupId>
-      <artifactId>cachefs</artifactId>
-      <version>0.0.3</version>
-    </dependency>
-<dependency>
-    <groupId>net.sourceforge.htmlunit</groupId>
-    <artifactId>htmlunit</artifactId>
-    <version>2.8</version>
-</dependency>
-<!-- 
- -->
- <dependency>
-    <groupId>org.apache.james</groupId>
-    <artifactId>apache-mime4j</artifactId>
-    <version>0.6</version>
-</dependency>
+		<dependency>
+			<groupId>cc.co.llabor</groupId>
+			<artifactId>cachefs</artifactId>
+			<version>0.0.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.htmlunit</groupId>
+			<artifactId>htmlunit</artifactId>
+			<version>2.8</version>
+		</dependency>
+		<!-- 
+		-->
+		<dependency>
+			<groupId>org.apache.james</groupId>
+			<artifactId>apache-mime4j</artifactId>
+			<version>0.6</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.appengine</groupId>
@@ -179,21 +227,21 @@
 			| JCR
 			+-->
 
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>jcl-over-slf4j</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.jcr</groupId>
 			<artifactId>jcr</artifactId>
