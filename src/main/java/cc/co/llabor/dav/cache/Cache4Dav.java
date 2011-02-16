@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import cc.co.llabor.cache.BinaryContent;
 import cc.co.llabor.cache.Manager;
 import cc.co.llabor.dav.AbstractTransactionalDaver;
 
@@ -61,24 +62,12 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 	} 
 	
 	public long setResourceContent(ITransaction transaction,
-			String resourceUri, InputStream content, String contentType,
-			String characterEncoding) {
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		byte[] retval = null;
-		try{
-			int bufSize = content.available();
-			bufSize = bufSize == 0? 4096:bufSize; 
-			byte[] buf = new byte[bufSize];
-			
-			for (int readed = content.read(buf);readed>0;readed = content.read(buf)){
-				bout.write(buf, 0, readed); 
-			}
-			retval = bout.toByteArray() ;
-			store.put(resourceUri.substring(1), retval );
-		}catch(IOException  e){
-			e.printStackTrace();
-		}
-		return retval == null?-1:retval.length;
+		String resourceUri, InputStream content, String contentType,
+		String characterEncoding) {
+		BinaryContent toStore = new BinaryContent(content, contentType, characterEncoding );
+		Object retval = store.put(resourceUri.substring(1), toStore );
+  
+		return retval == null?-1:retval.toString().length();
 	}
  
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
@@ -168,6 +157,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 					}  
 			} 
 		}catch(NullPointerException e){
+			e.printStackTrace();
 			retval = null;	  // have to be created!
 			return retval;
 		}catch(java.lang.ArrayIndexOutOfBoundsException e){

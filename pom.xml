@@ -5,7 +5,8 @@
 	<groupId>cc.co.llabor</groupId>
 	<artifactId>jdav</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<description></description>
+	<name>DavBox</name>
+	<description>provide the basic WebDav functionality for CacheFSs..</description>
 	<packaging>war</packaging>
 	<distributionManagement>
 		<site>
