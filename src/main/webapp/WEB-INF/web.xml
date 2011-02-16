@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<servlet>
+		<description>User Authentication in Java</description>
+		<servlet-name>authservlet</servlet-name>
+		<servlet-class>cc.co.llabor.httpauth.BaseAuth</servlet-class>
+		<load-on-startup>1</load-on-startup><!-- Must -->
+	</servlet>
+
+ 
+<!-- CacheWebDav - access to local Cache -->
+	<servlet>
+		<servlet-name>CacheWebDav</servlet-name>
+		<servlet-class>cc.co.llabor.JdavServlet</servlet-class>
+		<init-param>
+			<description>cache-name</description>
+			<param-name>rootpath</param-name>
+			<param-value>SCRIPTSTORE</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ResourceHandlerImplementation</param-name>
+			<param-value>cc.co.llabor.dav.cache.Cache4Dav</param-value>
+		</init-param>
+	</servlet>	
+<!-- SfWebDav - access to gaevfs-0.3.zip -->
+	<servlet>
+		<servlet-name>SfWebDav</servlet-name>
+		<servlet-class>net.sf.webdav.WebdavServlet</servlet-class>
+		<init-param>
+			<param-name>rootpath</param-name>
+			<param-value>gaevfs-0.3.zip</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ResourceHandlerImplementation</param-name>
+			<param-value>cc.co.llabor.dav.zip.Zip4Dav</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>authservlet</servlet-name>
+		<url-pattern>/auth</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CacheWebDav</servlet-name>
+		<url-pattern>/cache/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CacheWebDav</servlet-name>
+		<url-pattern>/ca/*</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
+		<servlet-name>SfWebDav</servlet-name>
+		<url-pattern>/sfdav/*</url-pattern>
+	</servlet-mapping>
+	<security-constraint>
+		<web-resource-collection><web-resource-name>fffkk</web-resource-name>
+			<url-pattern>/sfdav/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+		<!-- basic auth 4 tc6.x! 
+			!!!comment it for GAE!!! -->
+	</security-constraint>	
+	<security-constraint>
+		<web-resource-collection><web-resource-name>fffkk</web-resource-name>
+			<url-pattern>/cache/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+		<!-- basic auth 4 tc6.x! 
+			!!!comment it for GAE!!! -->
+	</security-constraint>
+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>Dav Tomcat Supported Realm</realm-name>
+	</login-config>
+
+	<error-page>
+		<error-code>500</error-code>
+		<location>/errors/servererror.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/errors/usererror.jsp</location>
+	</error-page>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>
