@@ -173,6 +173,13 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- jdo -->
+		<dependency>
+			<groupId>cc.co.llabor</groupId>
+			<artifactId>jdo</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		
 		<!--  cc\co\llabor\cachefs\0.0.1-SNAPSHOT -->
 		<dependency>
 			<groupId>cc.co.llabor</groupId>

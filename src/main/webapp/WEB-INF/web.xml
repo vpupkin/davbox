@@ -26,6 +26,21 @@
 			<param-value>cc.co.llabor.dav.cache.Cache4Dav</param-value>
 		</init-param>
 	</servlet>	
+
+<!-- CacheWebDav - access to local Cache -->
+	<servlet>
+		<servlet-name>JdoWebDav</servlet-name>
+		<servlet-class>cc.co.llabor.JdavServlet</servlet-class>
+ 
+		<init-param>
+			<param-name>ResourceHandlerImplementation</param-name>
+			<param-value>cc.co.llabor.dav.jdo.Jdo4Dav</param-value>
+		</init-param>
+
+		
+	</servlet>	
+	
+	
 <!-- SfWebDav - access to gaevfs-0.3.zip -->
 	<servlet>
 		<servlet-name>SfWebDav</servlet-name>
@@ -51,6 +66,10 @@
 	<servlet-mapping>
 		<servlet-name>CacheWebDav</servlet-name>
 		<url-pattern>/ca/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>JdoWebDav</servlet-name>
+		<url-pattern>/jdo/*</url-pattern>
 	</servlet-mapping>	
 	<servlet-mapping>
 		<servlet-name>SfWebDav</servlet-name>

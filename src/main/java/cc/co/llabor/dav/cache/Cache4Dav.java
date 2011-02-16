@@ -111,18 +111,24 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		StoredObject retval = null;
 		Set keysTmp = null;
 		uri = (""+"").equals( uri )? "/":uri;
+		final String keyTmp = uri.substring(1);
 		try{
 			if ("/".equals(uri)){
 				retval = new KeySetObject(keysTmp);
 				return retval;
 			}
-			Object valTmp = store.get(uri.substring(1));
+			Object valTmp = store.get(keyTmp);store.getCacheEntry(keyTmp);
 			if (valTmp != null){
 				retval = new StoredObject();
 				retval.setFolder(false);
-				int lenTmp = 111;
-				if (valTmp instanceof byte[]) lenTmp = ((byte[])valTmp).length;
-				if (valTmp instanceof String) lenTmp = ((String)valTmp).length();
+				int lenTmp = 0;
+				if (valTmp instanceof byte[]) {
+					lenTmp = ((byte[])valTmp).length;
+				}else  if (valTmp instanceof String) {
+					lenTmp = ((String)valTmp).length();
+				}else{
+					System.out.println(valTmp);
+				}
 				retval.setResourceLength(lenTmp); 
 				retval.setLastModified(new Date());
 				retval.setCreationDate( new Date());
@@ -136,13 +142,13 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				keysTmp = cacheTmp.keySet();
 			}catch(java.lang.UnsupportedOperationException e){
 				e.printStackTrace();
-				cacheTmp.put(uri.substring(1), ""+System.currentTimeMillis());
+				cacheTmp.put(keyTmp, ""+System.currentTimeMillis());
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			if (!"/".equals(uri)) { // file or DIR?
 				File setBase = ((File)store.keySet().toArray()[0]).getParentFile();
-				File file2checkTmp = new File(setBase,uri.substring(1));  
+				File file2checkTmp = new File(setBase,keyTmp);  
 					if (file2checkTmp. isDirectory()){ 
 						retval = new KeySetObject(keysTmp);// IS DIRECTORTY!
 					}else if (file2checkTmp. exists()){ 
@@ -164,8 +170,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 			retval = null;	 // have to be created!
 			return retval; 
 		}catch(java.lang.UnsupportedOperationException e){ // GAE not support LIST_of_cache
-			store.put(uri.substring(1), ""+System.currentTimeMillis());
-			storeKeys.add(uri.substring(1));
+			store.put(keyTmp, ""+System.currentTimeMillis());
+			storeKeys.add(keyTmp);
 			retval.setNullResource(false) ;
 			retval.setCreationDate(new Date());
 			retval.setLastModified(new Date());			
