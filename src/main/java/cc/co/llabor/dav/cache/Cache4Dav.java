@@ -1,18 +1,16 @@
 package cc.co.llabor.dav.cache;
- 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+  
+import java.io.File; 
 import java.io.IOException;
 import java.io.InputStream; 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.Date; 
 import java.util.List;
 import java.util.Set;
-
-import cc.co.llabor.cache.BinaryContent;
-import cc.co.llabor.cache.Manager;
+ 
+import cc.co.llabor.cache.MemoryFileCache;
+import cc.co.llabor.cache.MemoryFileItem;
+import cc.co.llabor.cache.MemoryFileItemFactory;
 import cc.co.llabor.dav.AbstractTransactionalDaver;
 
 import net.sf.jsr107cache.Cache;
@@ -32,19 +30,22 @@ import net.sf.webdav.StoredObject;
  */
 public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavStore, CacheListener {
 
-	private File file;
-	Cache  store  = null;
+	  
 	List<String> storeKeys = new ArrayList<String>();
 
+	MemoryFileCache cache;
+	File file ;  	
+	
 	public Cache4Dav(File filePar){
-		this.file = filePar; 
-		this.store = Manager.getCache(this.file.getName());		
-		 
+		this.file = filePar;
+		cache = MemoryFileCache.getInstance(filePar.getName());
+		cache.registerListener(this);
+		
 	}	
 	public void removeObject(ITransaction transaction, String uri) { 
 		try{
-			File toDel = new File( ((File)store.keySet().toArray()[0]).getCanonicalFile().getParentFile() ,uri); 
-			System.out.println("<delete><file name=\'"+toDel.getAbsolutePath()+"\'/>... ");
+			MemoryFileItem toDel = cache.get(uri); 
+			System.out.println("<delete><file name=\'"+toDel.getName()+"\'/>... ");
 			toDel.delete();
 			System.out.println("</delete>");
 		}catch (Exception e) {
@@ -52,49 +53,62 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		}
 	}
 
-	public void createFolder(ITransaction transaction, String folderUri) {
-		String subCacheNameTmp = this.file.getName()+folderUri;
-		final Cache cacheTmp = Manager.getCache(subCacheNameTmp, true);
-		System.out.println("cache/dir created: {"+subCacheNameTmp+"}  -->["+cacheTmp+"]");
+	public void createFolder(ITransaction transaction, String folderUri) { 
+		System.out.println("cache/dir created: {"+folderUri+"}  -->["+file.getAbsolutePath()+"]");
 	}
 	public void createResource(ITransaction transaction, String resourceUri) {
-		store.put(resourceUri.substring(1), "@created"+System.currentTimeMillis()+"...");
+		final MemoryFileItemFactory instance = MemoryFileItemFactory.getInstance();
+		String contentType = null;
+		boolean isFormField = false;
+		String fieldName = resourceUri;
+		String fileName = resourceUri;
+		MemoryFileItem toStore = instance.createItem(fieldName, contentType, isFormField, fileName);
+		try {
+			cache.put(toStore);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	} 
 	
 	public long setResourceContent(ITransaction transaction,
-		String resourceUri, InputStream content, String contentType,
-		String characterEncoding) {
-		BinaryContent toStore = new BinaryContent(content, contentType, characterEncoding );
-		Object retval = store.put(resourceUri.substring(1), toStore );
-  
-		return retval == null?-1:retval.toString().length();
+			String resourceUri, InputStream content, String contentType,
+			String characterEncoding) { 
+		MemoryFileItem retval; 
+		try {
+			retval = cache.get(resourceUri);
+			retval.setContentType(contentType);
+			retval.setContentType(characterEncoding);
+			retval.setContentInputStream(content);	
+			// reStore at the cache
+			cache.put(retval);
+			return retval.getSize();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return 0;
+
 	}
  
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
-		final String cacheNameTmp = this.file.getName()+folderUri;
-		final Cache cacheTmp = Manager.getCache(cacheNameTmp);
-		final Set<String> retval = new HashSet<String>();
-		cacheTmp.addListener(this);
-		try{
-			final Set<File> fileKeySet = cacheTmp.keySet();	
-			for(File nTmp :fileKeySet){
-				String nameTmp = nTmp.getName();
-				retval.add(nameTmp);
-			}
-		}catch(UnsupportedOperationException e){
-			// TODO GAE - empty list 
-			e.printStackTrace();
-			retval.addAll(storeKeys);
-		}
-		return  retval.toArray(new String[]{});
+ 		return  cache.list(folderUri);
 	}
 
 	public InputStream getResourceContent(ITransaction transaction,
 			String resourceUri) {
-		Object o = store.get(resourceUri.substring(1));
+		MemoryFileItem o;
 		InputStream retval = null;
-		retval = (o  instanceof byte[]) ?	new ByteArrayInputStream((byte[])o):null;
-		retval = retval == null? (o  instanceof InputStream) ? (InputStream)o:	new ByteArrayInputStream((""+o).getBytes()):retval;
+		try {
+			o = cache.get(resourceUri);
+			retval = o.getInputStream(); 
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		return retval;
 	}
@@ -117,7 +131,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				retval = new KeySetObject(keysTmp);
 				return retval;
 			}
-			Object valTmp = store.get(keyTmp);store.getCacheEntry(keyTmp);
+			Object valTmp = cache.get( keyTmp );
 			if (valTmp != null){
 				retval = new StoredObject();
 				retval.setFolder(false);
@@ -125,7 +139,9 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				if (valTmp instanceof byte[]) {
 					lenTmp = ((byte[])valTmp).length;
 				}else  if (valTmp instanceof String) {
-					lenTmp = ((String)valTmp).length();
+					lenTmp = ((String)valTmp).length(); 
+				}else  if (valTmp instanceof MemoryFileItem) {
+					lenTmp = (int) ((MemoryFileItem)valTmp).getSize(); 
 				}else{
 					System.out.println(valTmp);
 				}
@@ -134,59 +150,37 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				retval.setCreationDate( new Date());
 				return retval;
 			}
-			
-			String cacheNameTmp = this.file.getName()+uri;
-			cacheNameTmp = cacheNameTmp.endsWith("/")? cacheNameTmp .substring(0,cacheNameTmp .lastIndexOf("/")):cacheNameTmp ;
-			final Cache cacheTmp = Manager.getCache(cacheNameTmp, false);
-			try{
-				keysTmp = cacheTmp.keySet();
-			}catch(java.lang.UnsupportedOperationException e){
-				e.printStackTrace();
-				cacheTmp.put(keyTmp, ""+System.currentTimeMillis());
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			if (!"/".equals(uri)) { // file or DIR?
-				File setBase = ((File)store.keySet().toArray()[0]).getParentFile();
-				File file2checkTmp = new File(setBase,keyTmp);  
-					if (file2checkTmp. isDirectory()){ 
-						retval = new KeySetObject(keysTmp);// IS DIRECTORTY!
-					}else if (file2checkTmp. exists()){ 
-						// feel file
-						retval = new StoredObject ();
-						retval.setNullResource(false) ;
-						retval.setFolder(false);
-						retval.setCreationDate(new Date());
-						retval.setLastModified(new Date());								
-					}else{ // looks like new resouce have to be created
-						return null;							
-					}  
-			} 
+ 
+ 
 		}catch(NullPointerException e){
 			e.printStackTrace();
 			retval = null;	  // have to be created!
 			return retval;
 		}catch(java.lang.ArrayIndexOutOfBoundsException e){
 			retval = null;	 // have to be created!
-			return retval; 
-		}catch(java.lang.UnsupportedOperationException e){ // GAE not support LIST_of_cache
-			store.put(keyTmp, ""+System.currentTimeMillis());
-			storeKeys.add(keyTmp);
-			retval.setNullResource(false) ;
-			retval.setCreationDate(new Date());
-			retval.setLastModified(new Date());			
+			return retval;  		
 		}catch(StringIndexOutOfBoundsException e){
 			retval = null;				
-		} 
-		if (retval == null){ // TO NULLOBJ
-			retval = new StoredObject ();
-			retval.setFolder(false);
-			retval.setNullResource(true) ;
-			retval.setCreationDate(new Date());
-			retval.setLastModified(new Date());				
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		if (retval == null && !"/.".equals(uri)){ // TO NULLOBJ 
+			retval = null;
+		}else{
+			retval = theNull;
 		}
 		
 		return retval; 
+	}
+	static final StoredObject theNull =  getNull() ;
+	private static StoredObject getNull() {
+		StoredObject  nullTmp = new StoredObject ();
+		nullTmp.setFolder(false);
+		nullTmp.setNullResource(true) ;
+		nullTmp.setCreationDate(new Date());
+		nullTmp.setLastModified(new Date());
+		return nullTmp;
 	}
 
 

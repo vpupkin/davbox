@@ -7,6 +7,9 @@
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/jdo/jdo">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/cachefs4j/cachefs4j">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="build/classes"/>
         <property name="context-root" value="davbox"/>
     </wb-module>
