@@ -79,8 +79,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		MemoryFileItem retval; 
 		try {
 			retval = cache.get(resourceUri);
-			retval.setContentType(contentType);
-			retval.setContentType(characterEncoding);
+			retval.setContentType("text");//contentType
+			retval.setContentType("ascii");//characterEncoding
 			retval.setContentInputStream(content);	
 			// reStore at the cache
 			cache.put(retval);
@@ -124,14 +124,14 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 	public StoredObject getStoredObject(ITransaction transaction, String uri) {  
 		StoredObject retval = null;
 		Set keysTmp = null;
-		uri = (""+"").equals( uri )? "/":uri;
-		final String keyTmp = uri.substring(1);
+		uri = ("").equals( uri )? "/":uri;
+		//final String keyTmp = uri.substring(1);
 		try{
-			if ("/".equals(uri)){
+			if ("/".equals(uri)||"/.".equals(uri)){
 				retval = new KeySetObject(keysTmp);
 				return retval;
 			}
-			Object valTmp = cache.get( keyTmp );
+			Object valTmp = cache.get( uri.replace("//", "/") );
 			if (valTmp != null){
 				retval = new StoredObject();
 				retval.setFolder(false);
