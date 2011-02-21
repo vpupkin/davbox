@@ -133,8 +133,8 @@ public class DoPropfind extends AbstractMethod {
                         }
                     } catch (Exception e) {
                     	e.printStackTrace();
-                        resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
-                        return;
+//                        resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+//                        return;
                     }
                 } else {
                     // no content, which means it is a allprop request

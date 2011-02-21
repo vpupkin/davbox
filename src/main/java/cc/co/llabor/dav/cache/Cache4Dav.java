@@ -8,11 +8,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
  
+import cc.co.llabor.cache.FileCache;
+import cc.co.llabor.cache.Manager;
 import cc.co.llabor.cache.MemoryFileCache;
 import cc.co.llabor.cache.MemoryFileItem;
 import cc.co.llabor.cache.MemoryFileItemFactory;
 import cc.co.llabor.dav.AbstractTransactionalDaver;
   
+import net.sf.jsr107cache.Cache;
 import net.sf.webdav.ITransaction;
 import net.sf.webdav.IWebdavStore;
 import net.sf.webdav.StoredObject;
@@ -150,6 +153,14 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 			if ("/".equals(uri)||"/.".equals(uri)){
 				retval = new KeySetObject(keysTmp);
 				return retval;
+			}else if (memFS.isDir(uri) || uri.endsWith("..") ){
+				retval = new StoredObject();
+				retval.setNullResource(false);
+				retval.setFolder(true);
+				retval.setCreationDate(new Date());
+				retval.setLastModified(new Date());
+				
+				return retval;
 			}
 			Object valTmp = memFS.get( uri.replace("//", "/") );
 			if (valTmp != null){
@@ -193,6 +204,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		
 		return retval; 
 	}
+ 
 	static final StoredObject theNull =  getNull() ;
 	private static StoredObject getNull() {
 		StoredObject  nullTmp = new StoredObject ();
