@@ -12,15 +12,17 @@ import cc.co.llabor.cache.MemoryFileCache;
 import cc.co.llabor.cache.MemoryFileItem;
 import cc.co.llabor.cache.MemoryFileItemFactory;
 import cc.co.llabor.dav.AbstractTransactionalDaver;
-
-import net.sf.jsr107cache.Cache;
-import net.sf.jsr107cache.CacheListener; 
+  
 import net.sf.webdav.ITransaction;
 import net.sf.webdav.IWebdavStore;
 import net.sf.webdav.StoredObject;
 
 /** 
- * <b>Description:TODO</b>
+ * <b>Provide Dav-Interface _generic_ org.apache.commons.fileupload.FileItem into 
+ * virtual Cache-backended DirStructure </b>
+ * 
+ * possible backend are GAE-memcache, jsr-170 spec, e.t.c.
+ * 
  * @author      vipup<br>
  * <br>
  * <b>Copyright:</b>     Copyright (c) 2006-2008 Monster AG <br>
@@ -28,23 +30,24 @@ import net.sf.webdav.StoredObject;
  * 
  * Creation:  10.11.2010::15:18:15<br> 
  */
-public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavStore, CacheListener {
+public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavStore  {
 
 	  
 	List<String> storeKeys = new ArrayList<String>();
 
-	MemoryFileCache cache;
+	MemoryFileCache memFS;
 	File file ;  	
 	
 	public Cache4Dav(File filePar){
 		this.file = filePar;
-		cache = MemoryFileCache.getInstance(filePar.getName());
-		cache.registerListener(this);
+		final String name = filePar.getName();
+		memFS = MemoryFileCache.getInstance(name);
+ 
 		
 	}	
 	public void removeObject(ITransaction transaction, String uri) { 
 		try{
-			MemoryFileItem toDel = cache.get(uri); 
+			MemoryFileItem toDel = memFS.get(uri); 
 			System.out.println("<delete><file name=\'"+toDel.getName()+"\'/>... ");
 			toDel.delete();
 			System.out.println("</delete>");
@@ -55,6 +58,18 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 
 	public void createFolder(ITransaction transaction, String folderUri) { 
 		System.out.println("cache/dir created: {"+folderUri+"}  -->["+file.getAbsolutePath()+"]");
+		final MemoryFileItemFactory instance = MemoryFileItemFactory.getInstance();
+		String contentType = "DIR";
+		boolean isFormField = false;
+		String fieldName = folderUri;
+		String fileName = folderUri;
+		MemoryFileItem toStore = instance.createItem(fieldName, contentType, isFormField, fileName);
+		try {
+			memFS.mkdir(toStore);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 	public void createResource(ITransaction transaction, String resourceUri) {
 		final MemoryFileItemFactory instance = MemoryFileItemFactory.getInstance();
@@ -64,7 +79,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		String fileName = resourceUri;
 		MemoryFileItem toStore = instance.createItem(fieldName, contentType, isFormField, fileName);
 		try {
-			cache.put(toStore);
+			memFS.put(toStore);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -78,12 +93,12 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 			String characterEncoding) { 
 		MemoryFileItem retval; 
 		try {
-			retval = cache.get(resourceUri);
+			retval = memFS.get(resourceUri);
 			retval.setContentType("text");//contentType
 			retval.setContentType("ascii");//characterEncoding
 			retval.setContentInputStream(content);	
 			// reStore at the cache
-			cache.put(retval);
+			memFS.put(retval);
 			return retval.getSize();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -94,7 +109,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 	}
  
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
- 		return  cache.list(folderUri);
+ 		return  memFS.list(folderUri);
 	}
 
 	public InputStream getResourceContent(ITransaction transaction,
@@ -102,7 +117,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		MemoryFileItem o;
 		InputStream retval = null;
 		try {
-			o = cache.get(resourceUri);
+			o = memFS.get(resourceUri);
 			retval = o.getInputStream(); 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -114,11 +129,16 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 	}
 
 	public long getResourceLength(ITransaction transaction, String path) {
-		// TODO Auto-generated method stub
-		if (1==1)throw new RuntimeException("not yet implemented since 10.11.2010");
-		else {
-		return 0;
+		MemoryFileItem o;
+		long retval = -1;
+		try {
+			o = memFS.get(path);
+			retval = o.getSize(); 
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return retval;
 	}
 
 	public StoredObject getStoredObject(ITransaction transaction, String uri) {  
@@ -131,7 +151,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				retval = new KeySetObject(keysTmp);
 				return retval;
 			}
-			Object valTmp = cache.get( uri.replace("//", "/") );
+			Object valTmp = memFS.get( uri.replace("//", "/") );
 			if (valTmp != null){
 				retval = new StoredObject();
 				retval.setFolder(false);
