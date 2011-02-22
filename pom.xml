@@ -8,6 +8,158 @@
 	<name>DavBox</name>
 	<description>provide the basic WebDav functionality for CacheFSs..</description>
 	<packaging>war</packaging>
+
+
+	<profiles>
+		<profile>
+			<id>profile-1</id>
+			<activation>
+				<jdk>1.4</jdk>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>${basedir}/src/main/profiles</directory>
+						<includes><include>p1.txt</include></includes>
+						<targetPath>profiles</targetPath>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		<profile>
+			<id>profile-2</id>
+
+			<activation>
+				<jdk>[1.5,2.0)</jdk>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>${basedir}/src/main/profiles</directory>
+						<includes><include>p2.txt</include></includes>
+						<targetPath>profiles</targetPath>
+					</resource>
+				</resources>
+			</build>
+
+		</profile>
+		<profile>
+			<id>profile-3</id>
+
+			<activation>
+				<os>
+					<name>Windows XP</name>
+					<family>Windows</family>
+					<arch>x86</arch>
+					<version>5.1.2600</version>
+				</os>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>${basedir}/src/main/profiles</directory>
+						<includes><include>p3.txt</include></includes>
+						<targetPath>profiles</targetPath>
+					</resource>
+				</resources>
+			</build>
+
+		</profile>
+		<profile>
+			<id>profile-4</id>
+
+			<activation>
+				<property>
+					<name>debug</name>
+				</property>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>${basedir}/src/main/profiles</directory>
+						<includes><include>p4.txt</include></includes>
+						<targetPath>profiles</targetPath>
+					</resource>
+				</resources>
+			</build>
+
+		</profile>
+		<profile>
+			<id>profile-5</id> 
+			<activation>
+				<property>
+					<name>cccache</name> 
+				</property>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>${basedir}/src/main/profiles</directory>
+						<includes><include>p5.txt</include></includes>
+						<targetPath>profiles</targetPath>
+					</resource><resource>
+						<filtering>true</filtering>
+						<directory>${basedir}/src/main/profiles</directory>
+						<includes><include>net.sf.jsr107cache.CacheFactory</include></includes>
+						<targetPath>META-INF/services</targetPath>
+					</resource>
+				</resources>
+			</build>
+
+		</profile>
+
+		<profile>
+			<id>profile-6</id>
+
+			<activation>
+				<file>
+					<missing>
+						target/generated-sources/axistools/wsdl2java/org/apache/maven
+					</missing>
+				</file>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>${basedir}/src/main/profiles</directory>
+						<includes><include>p6.txt</include></includes>
+						<targetPath>profiles</targetPath>
+					</resource>
+				</resources>
+			</build>
+
+		</profile>
+		<profile>
+			<id>profile-7</id>
+
+			<activation>
+				<property>
+					<name>google</name>
+					<value>on</value>
+				</property>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>${basedir}/src/main/profiles</directory>
+						<includes><include>p7.txt</include></includes>
+						<targetPath>profiles</targetPath>
+					</resource>
+				</resources>
+			</build>
+
+		</profile>
+
+	</profiles>
+
+
 	<distributionManagement>
 		<site>
 			<id>davrepo.gae</id>
@@ -32,7 +184,16 @@
 		<!-- port defaults to 8080 -->
 		<gae.port>8888</gae.port>
 	</properties>
-	<build>
+	<build> 
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>${basedir}/src/main/profiles</directory>
+						<includes><include>p0.txt</include></includes>
+						<targetPath>profiles</targetPath>
+					</resource>
+				</resources>
+		 
 		<extensions>
 		 <!--  dav:https://da -->
 			<extension>
@@ -66,6 +227,21 @@
 		</extensions>
 
 		<plugins>
+
+			<plugin>
+				<artifactId>
+					maven-mercurial-build-number-plugin
+				</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>set-build-number</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+					
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
