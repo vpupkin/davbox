@@ -1,1 +1,4 @@
 41${buildNumber}
+				<property>
+					<name>debug</name>
+				</property>
