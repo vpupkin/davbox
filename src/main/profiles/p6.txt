@@ -1,1 +1,6 @@
 6${buildNumber}
+			<activation>
+				<file>
+					<missing>
+						target/generated-sources/axistools/wsdl2java/org/apache/maven
+					</missing>

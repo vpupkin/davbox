@@ -114,8 +114,7 @@
 		</profile>
 
 		<profile>
-			<id>profile-6</id>
-
+			<id>profile-6</id> 
 			<activation>
 				<file>
 					<missing>
