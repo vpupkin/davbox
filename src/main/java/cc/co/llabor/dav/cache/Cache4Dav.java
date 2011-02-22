@@ -53,7 +53,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 			MemoryFileItem toDel = memFS.get(uri); 
 			System.out.println("<delete><file name=\'"+toDel.getName()+"\'/>... ");
 			toDel.delete();
-			System.out.println("</delete>");
+			Object retval = memFS.delete(toDel);
+			System.out.println(retval+"</delete>");
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -151,7 +152,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		uri = ("").equals( uri )? "/":uri;
 		//final String keyTmp = uri.substring(1);
 		try{
-			if ("/".equals(uri)||"/.".equals(uri)){
+			if ("/".equals(uri)||"/.".equals(uri) || uri.endsWith("/.")){
 				retval = new KeySetObject(keysTmp);
 				return retval;
 			}else if (memFS.isDir(uri) || uri.endsWith("..") ){
