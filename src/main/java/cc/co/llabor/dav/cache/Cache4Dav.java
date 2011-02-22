@@ -112,7 +112,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 	}
  
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
- 		return  memFS.list(folderUri);
+ 		String[] list = memFS.list(folderUri);
+		return  list;
 	}
 
 	public InputStream getResourceContent(ITransaction transaction,
@@ -154,7 +155,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				retval = new KeySetObject(keysTmp);
 				return retval;
 			}else if (memFS.isDir(uri) || uri.endsWith("..") ){
-				retval = new StoredObject();
+				retval = new DavStoredObject(uri);
 				retval.setNullResource(false);
 				retval.setFolder(true);
 				retval.setCreationDate(new Date());

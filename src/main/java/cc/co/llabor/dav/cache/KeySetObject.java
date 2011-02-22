@@ -14,11 +14,12 @@ import net.sf.webdav.StoredObject;
  * 
  * Creation:  10.11.2010::20:23:32<br> 
  */
-public class KeySetObject extends StoredObject {
+public class KeySetObject extends DavStoredObject {
 
 	private Set keys;
 
 	public KeySetObject(Set keysTmp) {
+		super("KeySetObject");
 		this.keys = keysTmp; 
 		this.setNullResource(false) ;
 		this.setFolder(true);
