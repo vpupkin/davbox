@@ -48,16 +48,22 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
  
 		
 	}	
-	public void removeObject(ITransaction transaction, String uri) { 
-		try{
-			MemoryFileItem toDel = memFS.get(uri); 
-			System.out.println("<delete><file name=\'"+toDel.getName()+"\'/>... ");
-			toDel.delete();
-			Object retval = memFS.delete(toDel);
-			System.out.println(retval+"</delete>");
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void removeObject(ITransaction transaction, String uri) {
+ 
+			// delete file
+			try{
+				MemoryFileItem toDel = memFS.get(uri); 
+				System.out.println("<delete>\n\t<file name=\'"+toDel.getName()+"\'/>... ");
+				toDel.delete();
+				Object retval = memFS.delete(toDel);
+				System.out.println(retval+"\n</delete>");
+				return;
+			}catch (Exception e) {
+				// ?? dir
+				e.printStackTrace();
+				memFS.delDir(uri);
+			}
+ 
 	}
 
 	public void createFolder(ITransaction transaction, String folderUri) { 
@@ -114,7 +120,14 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
  
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
  		String[] list = memFS.list(folderUri);
-		return  list;
+ 		String[] listNoDot = new String[list.length-1];
+ 		int i=0;
+ 		for (String val:list){
+ 			if (!".".equals( val )){
+ 				listNoDot [i++]=val;
+ 			}
+ 		}
+		return  listNoDot;
 	}
 
 	public InputStream getResourceContent(ITransaction transaction,
