@@ -171,7 +171,6 @@
 		<slf4j.version>1.5.8</slf4j.version>
 		<jetty.version>6.1.22</jetty.version>
 		<tika.version>0.6</tika.version>
-
 		<zk.version>5.0.3</zk.version>
 		<zkmax.version>5.0.0-RC2</zkmax.version>
 		<!--			Specify AppEngine version for your project.  		-->
