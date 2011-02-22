@@ -6,7 +6,9 @@
 	<artifactId>jdav</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>DavBox</name>
-	<description>provide the basic WebDav functionality for CacheFSs..</description>
+	<description>
+		provide the basic WebDav functionality for CacheFSs..
+	</description>
 	<packaging>war</packaging>
 
 
@@ -20,8 +22,12 @@
 				<resources>
 					<resource>
 						<filtering>true</filtering>
-						<directory>${basedir}/src/main/profiles</directory>
-						<includes><include>p1.txt</include></includes>
+						<directory>
+							${basedir}/src/main/profiles
+						</directory>
+						<includes>
+							<include>p1.txt</include>
+						</includes>
 						<targetPath>profiles</targetPath>
 					</resource>
 				</resources>
@@ -37,8 +43,12 @@
 				<resources>
 					<resource>
 						<filtering>true</filtering>
-						<directory>${basedir}/src/main/profiles</directory>
-						<includes><include>p2.txt</include></includes>
+						<directory>
+							${basedir}/src/main/profiles
+						</directory>
+						<includes>
+							<include>p2.txt</include>
+						</includes>
 						<targetPath>profiles</targetPath>
 					</resource>
 				</resources>
@@ -60,8 +70,12 @@
 				<resources>
 					<resource>
 						<filtering>true</filtering>
-						<directory>${basedir}/src/main/profiles</directory>
-						<includes><include>p3.txt</include></includes>
+						<directory>
+							${basedir}/src/main/profiles
+						</directory>
+						<includes>
+							<include>p3.txt</include>
+						</includes>
 						<targetPath>profiles</targetPath>
 					</resource>
 				</resources>
@@ -80,8 +94,12 @@
 				<resources>
 					<resource>
 						<filtering>true</filtering>
-						<directory>${basedir}/src/main/profiles</directory>
-						<includes><include>p4.txt</include></includes>
+						<directory>
+							${basedir}/src/main/profiles
+						</directory>
+						<includes>
+							<include>p4.txt</include>
+						</includes>
 						<targetPath>profiles</targetPath>
 					</resource>
 				</resources>
@@ -89,23 +107,34 @@
 
 		</profile>
 		<profile>
-			<id>profile-5</id> 
+			<id>profile-5</id>
 			<activation>
 				<property>
-					<name>cccache</name> 
+					<name>cccache</name>
 				</property>
 			</activation>
 			<build>
 				<resources>
 					<resource>
 						<filtering>true</filtering>
-						<directory>${basedir}/src/main/profiles</directory>
-						<includes><include>p5.txt</include></includes>
+						<directory>
+							${basedir}/src/main/profiles
+						</directory>
+						<includes>
+							<include>p5.txt</include>
+						</includes>
 						<targetPath>profiles</targetPath>
-					</resource><resource>
+					</resource>
+					<resource>
 						<filtering>true</filtering>
-						<directory>${basedir}/src/main/profiles</directory>
-						<includes><include>net.sf.jsr107cache.CacheFactory</include></includes>
+						<directory>
+							${basedir}/src/main/profiles
+						</directory>
+						<includes>
+							<include>
+								net.sf.jsr107cache.CacheFactory
+							</include>
+						</includes>
 						<targetPath>META-INF/services</targetPath>
 					</resource>
 				</resources>
@@ -114,7 +143,7 @@
 		</profile>
 
 		<profile>
-			<id>profile-6</id> 
+			<id>profile-6</id>
 			<activation>
 				<file>
 					<missing>
@@ -126,8 +155,12 @@
 				<resources>
 					<resource>
 						<filtering>true</filtering>
-						<directory>${basedir}/src/main/profiles</directory>
-						<includes><include>p6.txt</include></includes>
+						<directory>
+							${basedir}/src/main/profiles
+						</directory>
+						<includes>
+							<include>p6.txt</include>
+						</includes>
 						<targetPath>profiles</targetPath>
 					</resource>
 				</resources>
@@ -147,17 +180,47 @@
 				<resources>
 					<resource>
 						<filtering>true</filtering>
-						<directory>${basedir}/src/main/profiles</directory>
-						<includes><include>p7.txt</include></includes>
+						<directory>
+							${basedir}/src/main/profiles
+						</directory>
+						<includes>
+							<include>p7.txt</include>
+						</includes>
 						<targetPath>profiles</targetPath>
 					</resource>
 				</resources>
 			</build>
 
 		</profile>
-
+ 
+		<profile>
+			<id>profile-FILECACHE</id>
+			<activation>
+				<property>
+					<name>cccache</name>
+				</property>
+			</activation>
+			<properties>
+				<gae.application.version>xxx</gae.application.version>
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>
+							${basedir}/src/main/profiles
+						</directory>
+						<includes>
+							<include>
+								net.sf.jsr107cache.CacheFactory
+							</include>
+						</includes>
+						<targetPath>META-INF/services</targetPath>
+					</resource>
+				</resources>
+			</build>
+		</profile>
 	</profiles>
-
 
 	<distributionManagement>
 		<site>
@@ -182,24 +245,27 @@
 		<!-- port defaults to 8080 -->
 		<gae.port>8888</gae.port>
 	</properties>
-	<build> 
-				<resources>
-					<resource>
-						<filtering>true</filtering>
-						<directory>${basedir}/src/main/profiles</directory>
-						<includes><include>p0.txt</include></includes>
-						<targetPath>profiles</targetPath>
-					</resource>
-				</resources>
-		 
+
+	<build>
+		<resources>
+			<resource>
+				<filtering>true</filtering>
+				<directory>${basedir}/src/main/profiles</directory>
+				<includes>
+					<include>p0.txt</include>
+				</includes>
+				<targetPath>profiles</targetPath>
+			</resource>
+		</resources>
+
 		<extensions>
-		 <!--  dav:https://da -->
+			<!--  dav:https://da -->
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-webdav</artifactId>
 				<version>1.0-beta-2</version>
-			</extension>		
-		
+			</extension>
+
 			<extension>
 				<groupId>com.google.code.maven-svn-wagon</groupId>
 				<artifactId>maven-svn-wagon</artifactId>
@@ -239,7 +305,7 @@
 					</execution>
 				</executions>
 			</plugin>
-					
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -353,7 +419,7 @@
 			<artifactId>jdo</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-		
+
 		<!--  cc\co\llabor\cachefs\0.0.1-SNAPSHOT -->
 		<dependency>
 			<groupId>cc.co.llabor</groupId>
