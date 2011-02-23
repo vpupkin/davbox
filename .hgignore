@@ -1,0 +1,10 @@
+syntax: regexp
+^target$
+syntax: regexp
+^src/main/resources/config/testing\.json$
+syntax: regexp
+^src/main/resources/config/trusted_testing\.json$
+syntax: glob
+.settings/**/*
+syntax: regexp
+^.settings$

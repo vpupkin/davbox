@@ -1,0 +1,2 @@
+2${buildNumber}
+<jdk>[1.5,2.0)</jdk>
