@@ -71,6 +71,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		final MemoryFileItemFactory instance = MemoryFileItemFactory.getInstance();
 		String contentType = "DIR";
 		boolean isFormField = false;
+		folderUri = folderUri.replace("//", "/");
 		String fieldName = folderUri;
 		String fileName = folderUri;
 		MemoryFileItem toStore = instance.createItem(fieldName, contentType, isFormField, fileName);
@@ -85,6 +86,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		final MemoryFileItemFactory instance = MemoryFileItemFactory.getInstance();
 		String contentType = null;
 		boolean isFormField = false;
+		resourceUri = resourceUri.replace("//", "/");
 		String fieldName = resourceUri;
 		String fileName = resourceUri;
 		MemoryFileItem toStore = instance.createItem(fieldName, contentType, isFormField, fileName);

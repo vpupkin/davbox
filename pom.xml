@@ -234,7 +234,7 @@
 		<site>
 			<id>davrepo.gae</id>
 			<url>
-				dav:http://localhost:9090/jdav/ca/${pom.groupId}/${pom.artifactId}
+				dav:http://localhost:9090/${pom.artifactId}/ca/${pom.groupId}/${pom.artifactId}
 			</url>
 		</site>
 	</distributionManagement>
@@ -402,7 +402,7 @@
 		<dependency>
 			<groupId>cc.co.llabor</groupId>
 			<artifactId>cachefs</artifactId>
-			<version>0.0.6</version>
+			<version>0.0.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.htmlunit</groupId>
