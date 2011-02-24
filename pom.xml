@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cc.co.llabor</groupId>
 	<artifactId>davbox</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>DavBox</name>
 	<description>
 		provide the basic WebDav functionality for CacheFSs..
