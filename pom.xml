@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cc.co.llabor</groupId>
-	<artifactId>jdav</artifactId>
-	<version>0.0.1</version>
+	<artifactId>davbox</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>DavBox</name>
 	<description>
 		provide the basic WebDav functionality for CacheFSs..
@@ -14,7 +14,12 @@
 		<artifactId>l-parent</artifactId>
 		<version>1.6</version>
 	</parent>	
-
+  <scm>
+    <connection>scm:hg:${scm.base}/${pom.artifactId}</connection>
+    <developerConnection>scm:hg:${scm.base}/${pom.artifactId}</developerConnection>
+    <url>${l.base}/JSPWiki/Wiki.jsp?page=${pom.artifactId}</url>
+  </scm>
+	
 	<profiles>
 		<profile>
 			<id>profile-1</id>
