@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cc.co.llabor</groupId>
 	<artifactId>davbox</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.3</version>
 	<name>DavBox</name>
 	<description>
 		provide the basic WebDav functionality for CacheFSs..
@@ -402,7 +402,7 @@
 		<dependency>
 			<groupId>cc.co.llabor</groupId>
 			<artifactId>cachefs</artifactId>
-			<version>0.0.7-SNAPSHOT</version>
+			<version>0.0.7</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.htmlunit</groupId>
