@@ -11,6 +11,11 @@
 	</description>
 	<packaging>war</packaging>
 
+	<parent>
+		<groupId>cc.co.llabor</groupId>
+		<artifactId>l-parent</artifactId>
+		<version>1.6</version>
+	</parent>	
 
 	<profiles>
 		<profile>
@@ -258,37 +263,7 @@
 			</resource>
 		</resources>
 
-		<extensions>
-			<!--  dav:https://da -->
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-webdav</artifactId>
-				<version>1.0-beta-2</version>
-			</extension>
-
-			<extension>
-				<groupId>com.google.code.maven-svn-wagon</groupId>
-				<artifactId>maven-svn-wagon</artifactId>
-				<version>1.2</version>
-			</extension>
-
-			<!--  http://code.google.com/p/maven-googlecode-plugin/wiki/MavenSiteDeployOnSVN  -->
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-scm</artifactId>
-				<version>1.0-beta-6</version>
-			</extension>
-			<extension>
-				<groupId>org.apache.maven.scm</groupId>
-				<artifactId>maven-scm-manager-plexus</artifactId>
-				<version>1.0</version>
-			</extension>
-			<extension>
-				<groupId>org.apache.maven.scm</groupId>
-				<artifactId>maven-scm-provider-svnexe</artifactId>
-				<version>1.0</version>
-			</extension>
-		</extensions>
+		
 
 		<plugins>
 
