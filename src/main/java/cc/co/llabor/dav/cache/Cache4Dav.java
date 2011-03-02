@@ -10,10 +10,10 @@ import java.util.Set;
  
 import cc.co.llabor.cache.FileCache;
 import cc.co.llabor.cache.Manager;
-import cc.co.llabor.cache.MemoryFileCache;
 import cc.co.llabor.cache.MemoryFileItem;
 import cc.co.llabor.cache.MemoryFileItemFactory;
 import cc.co.llabor.dav.AbstractTransactionalDaver;
+import cc.co.llabor.jdoAsCache.MemoryFileDAO;
   
 import net.sf.jsr107cache.Cache;
 import net.sf.webdav.ITransaction;
@@ -38,13 +38,13 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 	  
 	List<String> storeKeys = new ArrayList<String>();
 
-	MemoryFileCache memFS;
+	MemoryFileDAO memFS;
 	File file ;  	
 	
 	public Cache4Dav(File filePar){
 		this.file = filePar;
 		final String name = filePar.getName();
-		memFS = MemoryFileCache.getInstance(name);
+		memFS = MemoryFileDAO.getInstance(name);
  
 		
 	}	
