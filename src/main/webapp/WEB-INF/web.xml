@@ -55,6 +55,21 @@
 		</init-param>
 	</servlet>
 
+
+	<servlet>
+		<servlet-name>InitService</servlet-name>
+		<servlet-class>cc.co.llabor.davbox.watchdog.InitService</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>InitService</servlet-name>
+		<url-pattern>/_ah/init</url-pattern>
+
+	</servlet-mapping>
+    <listener>
+        <listener-class>cc.co.llabor.davbox.watchdog.ShutdownHook</listener-class>
+    </listener>
+
 	<servlet-mapping>
 		<servlet-name>authservlet</servlet-name>
 		<url-pattern>/auth</url-pattern>
