@@ -18,18 +18,22 @@ public class InitService extends HttpServlet  {
 	public static final String SYSTEM_EXIT_RESETED =   ExitTrappedException.isReseted()? "YES":"no";
 	
 	public void destroy() {
-		log .info( "stop persistence ...");
-		PersistenceManagerFactory pmf = RRD_JDOHelper.getInstance().getPMF();
-		PersistenceManager pm = pmf.getPersistenceManager();
-		log .info( "..TR...");
-		//pm.currentTransaction().rollback();
-		log .info( "..PM...");
-		pm.flush();
-		log .info( "..//...");
-		pm.close();
-		log .info( "..PMF...");
-		pmf.close();
-		log .info( "compleete.");
+		try{
+			log .info( "stop persistence ...");
+			PersistenceManagerFactory pmf = RRD_JDOHelper.getInstance().getPMF();
+			PersistenceManager pm = pmf.getPersistenceManager();
+			log .info( "..TR...");
+			//pm.currentTransaction().rollback();
+			log .info( "..PM...");
+			pm.flush();
+			log .info( "..//...");
+			pm.close();
+			log .info( "..PMF...");
+			pmf.close();
+			log .info( "compleete.");
+		}catch(Throwable e){
+			log.error("destroy {1} throwed {2}", this.getClass(), e);
+		}
 		
 	}
 
