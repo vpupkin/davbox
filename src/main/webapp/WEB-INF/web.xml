@@ -27,7 +27,7 @@
 		</init-param>
 	</servlet>	
 
-<!-- CacheWebDav - access to local Cache -->
+<!-- JdoWebDav - access to local Cache -->
 	<servlet>
 		<servlet-name>JdoWebDav</servlet-name>
 		<servlet-class>cc.co.llabor.JdavServlet</servlet-class>
@@ -41,9 +41,9 @@
 	</servlet>	
 	
 	
-<!-- SfWebDav - access to gaevfs-0.3.zip -->
+<!-- ZIPWebDav - access to gaevfs-0.3.zip -->
 	<servlet>
-		<servlet-name>SfWebDav</servlet-name>
+		<servlet-name>ZipWebDav</servlet-name>
 		<servlet-class>net.sf.webdav.WebdavServlet</servlet-class>
 		<init-param>
 			<param-name>rootpath</param-name>
@@ -54,6 +54,21 @@
 			<param-value>cc.co.llabor.dav.zip.Zip4Dav</param-value>
 		</init-param>
 	</servlet>
+
+
+	<servlet>
+		<servlet-name>InitService</servlet-name>
+		<servlet-class>cc.co.llabor.davbox.watchdog.InitService</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>InitService</servlet-name>
+		<url-pattern>/_ah/init</url-pattern>
+
+	</servlet-mapping>
+    <listener>
+        <listener-class>cc.co.llabor.davbox.watchdog.ShutdownHook</listener-class>
+    </listener>
 
 	<servlet-mapping>
 		<servlet-name>authservlet</servlet-name>
@@ -72,12 +87,13 @@
 		<url-pattern>/jdo/*</url-pattern>
 	</servlet-mapping>	
 	<servlet-mapping>
-		<servlet-name>SfWebDav</servlet-name>
-		<url-pattern>/sfdav/*</url-pattern>
+		<servlet-name>ZipWebDav</servlet-name>
+		<url-pattern>/zdav/*</url-pattern>
 	</servlet-mapping>
 	<security-constraint>
 		<web-resource-collection><web-resource-name>fffkk</web-resource-name>
-			<url-pattern>/sfdav/*</url-pattern>
+		
+			<url-pattern>/zdav/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>admin</role-name>
