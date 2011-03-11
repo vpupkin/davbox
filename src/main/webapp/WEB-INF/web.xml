@@ -117,7 +117,7 @@
 
 	<login-config>
 		<auth-method>BASIC</auth-method>
-		<realm-name>Dav Tomcat Supported Realm</realm-name>
+		<realm-name>DavBox Supported Realm</realm-name>
 	</login-config>
 
 	<error-page>

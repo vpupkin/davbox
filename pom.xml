@@ -447,14 +447,14 @@
 		<dependency>
 			<groupId>cc.co.llabor</groupId>
 			<artifactId>jdo</artifactId>
-			<version>1.1.6-SNAPSHOT</version>
+			<version>1.1.6</version>
 		</dependency>
 
 		<!--  cc\co\llabor\cachefs\0.0.1-SNAPSHOT -->
 		<dependency>
 			<groupId>cc.co.llabor</groupId>
 			<artifactId>cachefs</artifactId>
-			<version>0.0.8-SNAPSHOT</version>
+			<version>0.0.8</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.htmlunit</groupId>
