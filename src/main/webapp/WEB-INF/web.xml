@@ -31,12 +31,16 @@
 	<servlet>
 		<servlet-name>JdoWebDav</servlet-name>
 		<servlet-class>cc.co.llabor.JdavServlet</servlet-class>
- 
+		<init-param>
+			<description>cache-name</description>
+			<param-name>rootpath</param-name>
+			<param-value>DERBY</param-value>
+		</init-param>
+			 
 		<init-param>
 			<param-name>ResourceHandlerImplementation</param-name>
 			<param-value>cc.co.llabor.dav.jdo.Jdo4Dav</param-value>
 		</init-param>
-
 		
 	</servlet>	
 	
@@ -63,8 +67,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>InitService</servlet-name>
-		<url-pattern>/_ah/init</url-pattern>
-
+		<url-pattern>/_ah/init</url-pattern> 
 	</servlet-mapping>
     <listener>
         <listener-class>cc.co.llabor.davbox.watchdog.ShutdownHook</listener-class>
