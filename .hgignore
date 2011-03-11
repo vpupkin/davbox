@@ -1,7 +1,12 @@
-
+syntax: glob
+*.log
+*.orig
 syntax: regexp
 ^target$
+syntax: regexp
+^.settings$
 syntax: regexp
 ^src/main/resources/config/testing\.json$
 syntax: regexp
 ^src/main/resources/config/trusted_testing\.json$
+
