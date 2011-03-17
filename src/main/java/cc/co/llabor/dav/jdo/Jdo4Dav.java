@@ -133,10 +133,14 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
  		String[] list = memFS.list(folderUri);
  		String[] listNoDot = new String[list.length-1];
  		int i=0;
- 		for (String val:list){
- 			if (!".".equals( val )){
- 				listNoDot [i++]=val;
- 			}
+ 		try{
+	 		for (String val:list){
+	 			if (!".".equals( val )){
+	 				listNoDot [i++]=val;
+	 			}
+	 		}
+ 		}catch(java.lang.ArrayIndexOutOfBoundsException e){
+ 			listNoDot = new String[]{"."};
  		}
 		return  listNoDot;
 	}
