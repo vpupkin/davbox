@@ -3,20 +3,15 @@ package cc.co.llabor.dav.jdo;
 import java.io.File;
 import java.io.InputStream;
 
-import javax.jdo.PersistenceManager;
-
-import ws.rdd.jdo.RRD_JDOHelper;
-
+ 
 import java.io.IOException; 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List; 
 import java.util.Set;
 
-import javax.jdo.Query;
-
-import ws.rdd.jdo.Blob; 
- 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.webdav.ITransaction;
 import net.sf.webdav.IWebdavStore;
@@ -24,6 +19,7 @@ import net.sf.webdav.StoredObject;
 import cc.co.llabor.cache.MemoryFileItem;
 import cc.co.llabor.cache.MemoryFileItemFactory;
 import cc.co.llabor.dav.AbstractTransactionalDaver;
+import cc.co.llabor.dav.cache.Cache4Dav;
 import cc.co.llabor.dav.cache.DavStoredObject;
 import cc.co.llabor.dav.cache.KeySetObject;
 import cc.co.llabor.jdoAsCache.MemoryFileDAO;
@@ -44,6 +40,16 @@ import cc.co.llabor.jdoAsCache.MemoryFileDAO;
  */
 public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore {
 
+	static final Logger log = LoggerFactory.getLogger(Cache4Dav.class);
+	
+	private static void System_out_println(Object s){
+		System_out_println(""+ s);
+	}
+	private static void System_out_println(String s){
+		log.debug(s);
+	}
+
+	
 	  
 	List<String> storeKeys = new ArrayList<String>();
 
@@ -62,10 +68,10 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 			// delete file
 			try{
 				MemoryFileItem toDel = memFS.get(uri); 
-				System.out.println("<delete>\n\t<file name=\'"+toDel.getName()+"\'/>... ");
+				System_out_println("<delete>\n\t<file name=\'"+toDel.getName()+"\'/>... ");
 				toDel.delete();
 				Object retval = memFS.delete(toDel);
-				System.out.println(retval+"\n</delete>");
+				System_out_println(retval+"\n</delete>");
 				return;
 			}catch (Exception e) {
 				// ?? dir
@@ -76,7 +82,7 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 	}
 
 	public void createFolder(ITransaction transaction, String folderUri) { 
-		System.out.println("cache/dir created: {"+folderUri+"}  -->["+file.getAbsolutePath()+"]");
+		System_out_println("cache/dir created: {"+folderUri+"}  -->["+file.getAbsolutePath()+"]");
 		final MemoryFileItemFactory instance = MemoryFileItemFactory.getInstance();
 		String contentType = "DIR";
 		boolean isFormField = false;
@@ -204,7 +210,7 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 				}else  if (valTmp instanceof MemoryFileItem) {
 					lenTmp = (int) ((MemoryFileItem)valTmp).getSize(); 
 				}else{
-					System.out.println(valTmp);
+					System_out_println(valTmp);
 				}
 				retval.setResourceLength(lenTmp); 
 				retval.setLastModified(new Date());
@@ -252,20 +258,20 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 		 
 	}
 	public void onClear() {
-		System.out.println("onClear");
+		System_out_println("onClear");
 	}
 	public void onEvict(Object key) {
-		System.out.println("onEvict"+key);
+		System_out_println("onEvict"+key);
 	}
 	public void onLoad(Object key) {
-		System.out.println("onLoad"+key);
+		System_out_println("onLoad"+key);
 	}
 	public void onPut(Object key) {
-		System.out.println("onPut"+key);
+		System_out_println("onPut"+key);
 		storeKeys.add(""+key);
 	}
 	public void onRemove(Object key) {
-		System.out.println("onRemove"+key);
+		System_out_println("onRemove"+key);
 		storeKeys.remove( ""+key);
 	}
 
