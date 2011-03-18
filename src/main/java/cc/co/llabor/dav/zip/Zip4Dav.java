@@ -12,7 +12,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cc.co.llabor.dav.AbstractTransactionalDaver;
+import cc.co.llabor.dav.cache.Cache4Dav;
 
 
 import net.sf.webdav.ITransaction;
@@ -29,6 +33,7 @@ import net.sf.webdav.StoredObject;
  * Creation:  07.10.2010::18:18:04<br> 
  */
 public class Zip4Dav extends AbstractTransactionalDaver implements IWebdavStore {
+	static final Logger log = LoggerFactory.getLogger(Cache4Dav.class);
 	 
 	private File file; 
 
@@ -178,7 +183,7 @@ public class Zip4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 					retval .setCreationDate( new Date() ); 					
 					break;
 				}else{
-					System.out.println("ignred >"+itemName);
+					log.debug("ignred >"+itemName);
 				}
 			}
 		} catch (IOException e) {

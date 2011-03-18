@@ -2,6 +2,11 @@ package net.sf.webdav.locking;
 
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cc.co.llabor.dav.cache.Cache4Dav;
+
 /**
  * a helper class for ResourceLocks, represents the Locks
  * 
@@ -9,6 +14,8 @@ import java.util.UUID;
  * 
  */
 public class LockedObject {
+	static final Logger log = LoggerFactory.getLogger(LockedObject.class);
+
 
     private ResourceLocks _resourceLocks;
 
@@ -139,8 +146,8 @@ public class LockedObject {
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("LockedObject.removeLockedObjectOwner()");
-            System.out.println(e.toString());
+            log.debug("LockedObject.removeLockedObjectOwner()");
+            log.debug(e.toString());
         }
     }
 
