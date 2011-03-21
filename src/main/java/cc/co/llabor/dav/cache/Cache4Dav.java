@@ -65,7 +65,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
  
 			// delete file
 			try{
-				MemoryFileItem toDel = memFS.get(uri); 
+				MemoryFileItem toDel = memFS.get(uri);
+				if (toDel==null)return;
 				System_out_println("<delete>\n\t<file name=\'"+toDel.getName()+"\'/>... ");
 				toDel.delete();
 				Object retval = memFS.delete(toDel);
