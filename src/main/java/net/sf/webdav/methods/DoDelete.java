@@ -180,6 +180,7 @@ public class DoDelete extends AbstractMethod {
             children[i] = "/" + children[i];
             try {
                 so = _store.getStoredObject(transaction, path + children[i]);
+                if (so == null) continue; // nothing to do
                 if (so.isResource()) {
                     _store.removeObject(transaction, path + children[i]);
 
