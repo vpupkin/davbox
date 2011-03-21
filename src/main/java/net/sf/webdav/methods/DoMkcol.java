@@ -138,11 +138,14 @@ public class DoMkcol extends AbstractMethod {
                                 }
 
                             } else {
-                                String methodsAllowed = DeterminableMethod
-                                        .determineMethodsAllowed(so);
-                                resp.addHeader("Allow", methodsAllowed);
-                                resp
-                                        .sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
+                            	// TODO ...
+                            	int theOne = 1;
+                            	if (1==theOne){
+                            		String methodsAllowed = DeterminableMethod
+	                                        .determineMethodsAllowed(so);
+	                                resp.addHeader("Allow", methodsAllowed);
+	                                resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
+                            	}
                             }
                         }
 

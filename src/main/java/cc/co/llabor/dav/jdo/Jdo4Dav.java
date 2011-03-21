@@ -68,6 +68,7 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 			// delete file
 			try{
 				MemoryFileItem toDel = memFS.get(uri); 
+				if (toDel==null)return;
 				System_out_println("<delete>\n\t<file name=\'"+toDel.getName()+"\'/>... ");
 				toDel.delete();
 				Object retval = memFS.delete(toDel);
@@ -142,14 +143,10 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
  		String[] list = memFS.list(folderUri);
  		String[] listNoDot = new String[list.length-1];
  		int i=0;
- 		try{
-	 		for (String val:list){
-	 			if (!".".equals( val )){
-	 				listNoDot [i++]=val;
-	 			}
-	 		}
- 		}catch(java.lang.ArrayIndexOutOfBoundsException e){
- 			listNoDot = new String[]{"."};
+ 		for (String val:list){
+ 			if (!".".equals( val )){
+ 				listNoDot [i++]=val;
+ 			}
  		}
 		return  listNoDot;
 	}
