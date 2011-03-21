@@ -23,6 +23,7 @@ import net.sf.jsr107cache.Cache;
 import net.sf.webdav.ITransaction;
 import net.sf.webdav.IWebdavStore;
 import net.sf.webdav.StoredObject;
+import net.sf.webdav.exceptions.ObjectNotFoundException;
 
 /** 
  * <b>Provide Dav-Interface _generic_ org.apache.commons.fileupload.FileItem into 
@@ -209,6 +210,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				retval.setLastModified(new Date());
 				retval.setCreationDate( new Date());
 				return retval;
+			}else if (1==2){ 
+				throw new ObjectNotFoundException ();
 			}
  
  

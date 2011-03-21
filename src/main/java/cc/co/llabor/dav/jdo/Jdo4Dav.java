@@ -130,6 +130,9 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (NullPointerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} 
 		return 0;
 

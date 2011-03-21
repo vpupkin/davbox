@@ -158,8 +158,8 @@ public class DoMkcol extends AbstractMethod {
                                 .trace("MkCol on non-existing resource is not executable"
                                         + "\n Sending SC_NOT_FOUND (404) error response!");
 
-                        errorList.put(parentPath, WebdavStatus.SC_NOT_FOUND);
-                        sendReport(req, resp, errorList);
+                        errorList.put(parentPath, WebdavStatus.SC_CONFLICT);
+                        resp.sendError(WebdavStatus.SC_CONFLICT);
                     } else {
                         resp.sendError(WebdavStatus.SC_FORBIDDEN);
                     }
