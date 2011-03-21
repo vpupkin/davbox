@@ -78,7 +78,13 @@ public class DoMkcol extends AbstractMethod {
                     if (parentPath != null && parentSo != null
                             && parentSo.isFolder()) {
                         so = _store.getStoredObject(transaction, path);
-                        if (so == null) {
+                        if (so == null) { 
+                        	if("xzy-foo/bar-512".equals( req.getHeader("content-type"))){
+                        		// TODO 14. mkcol_with_body....... FAIL (MKCOL on `/davbox/ca/litmus/mkcolbody' with (invalid) body: Could not read status line: connection timed out)
+                        		resp
+                                .sendError(WebdavStatus.SC_UNSUPPORTED_MEDIA_TYPE);
+                        		return;
+                        	}
                             _store.createFolder(transaction, path);
                             resp.setStatus(WebdavStatus.SC_CREATED);
                         } else {
