@@ -141,11 +141,16 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
  
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
  		String[] list = memFS.list(folderUri);
- 		String[] listNoDot = new String[list.length-1];
+ 		int maxSize = list.length;
+ 		maxSize = maxSize==0?1:maxSize;
+ 		String[] listNoDot = new String[maxSize];
  		int i=0;
  		for (String val:list){
  			if (!".".equals( val )){
  				listNoDot [i++]=val;
+ 			}else{
+ 				maxSize--;
+ 				listNoDot [i++]=".";
  			}
  		}
 		return  listNoDot;

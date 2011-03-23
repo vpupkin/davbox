@@ -140,7 +140,7 @@ public class DoMkcol extends AbstractMethod {
                             } else {
                             	// TODO ...
                             	int theOne = 1;
-                            	if (1==theOne){
+                            	if (2==theOne){
                             		String methodsAllowed = DeterminableMethod
 	                                        .determineMethodsAllowed(so);
 	                                resp.addHeader("Allow", methodsAllowed);
