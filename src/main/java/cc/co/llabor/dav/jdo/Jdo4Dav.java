@@ -65,20 +65,26 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 	}	
 	public void removeObject(ITransaction transaction, String uri) {
  
-			// delete file
-			try{
-				MemoryFileItem toDel = memFS.get(uri); 
-				if (toDel==null)return;
-				System_out_println("<delete>\n\t<file name=\'"+toDel.getName()+"\'/>... ");
-				toDel.delete();
-				Object retval = memFS.delete(toDel);
-				System_out_println(retval+"\n</delete>");
-				return;
-			}catch (Exception e) {
-				// ?? dir
-				e.printStackTrace();
+		try{
+			if (memFS.isDir(uri)){
 				memFS.delDir(uri);
+			}else{
+				// delete file
+				
+					MemoryFileItem toDel = memFS.get(uri); 
+					if (toDel==null)return;
+					System_out_println("<delete>\n\t<file name=\'"+toDel.getName()+"\'/>... ");
+					toDel.delete();
+					Object retval = memFS.delete(toDel);
+					System_out_println(retval+"\n</delete>");
+					return;				
 			}
+		}catch (Exception e) {
+			// ?? dir
+			e.printStackTrace();
+			//memFS.delDir(uri);
+		}
+
  
 	}
 
@@ -152,6 +158,17 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
  				maxSize--;
  				listNoDot [i++]=".";
  			}
+ 		}
+ 		// adjust retval-lengh 
+ 		if(maxSize < listNoDot.length){
+ 			String[] listtmp = new String[maxSize];
+ 			int done = 0;
+ 			for (String v:listNoDot){
+ 				if (!".".equals( v )){
+ 					listtmp[done++] = v;
+ 				}
+ 			}
+ 			listNoDot = listtmp;
  		}
 		return  listNoDot;
 	}
