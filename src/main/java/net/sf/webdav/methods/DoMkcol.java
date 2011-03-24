@@ -138,13 +138,18 @@ public class DoMkcol extends AbstractMethod {
                                 }
 
                             } else {
-                            	// TODO ...
+                            	// TODO resource is already exist, but requested the chage Dir->File || File->Dir.
+                            	// namely other type with same name. 
+                            	// have to be [status-line] < HTTP/1.1 405 Method Not Allowed
                             	int theOne = 1;
-                            	if (2==theOne){
+                            	theOne = so.isFolder()?2:1;
+                            	if (1==theOne){
                             		String methodsAllowed = DeterminableMethod
 	                                        .determineMethodsAllowed(so);
 	                                resp.addHeader("Allow", methodsAllowed);
 	                                resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
+                            	}else{
+                            		System.out.println("DIR->FILE || File->Dir ??");
                             	}
                             }
                         }
