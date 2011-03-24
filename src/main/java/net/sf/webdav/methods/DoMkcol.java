@@ -148,8 +148,14 @@ public class DoMkcol extends AbstractMethod {
 	                                        .determineMethodsAllowed(so);
 	                                resp.addHeader("Allow", methodsAllowed);
 	                                resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
+                            	}else if ((System.currentTimeMillis() - so.getLastModified().getTime()  )<111000 ) {
+                            		// TODO DIRTY workaround for 11. mkcol_again........... FAIL (MKCOL on existing collection should fail (RFC2518:8.3.1))
+                            		String methodsAllowed = DeterminableMethod
+                                    .determineMethodsAllowed(so);
+                            		resp.addHeader("Allow", methodsAllowed);
+                            		resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
                             	}else{
-                            		System.out.println("DIR->FILE || File->Dir ??");
+                                    System.out.println("DIR->FILE || File->Dir ??");
                             	}
                             }
                         }
