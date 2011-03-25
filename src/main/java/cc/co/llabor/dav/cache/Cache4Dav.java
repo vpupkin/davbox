@@ -187,9 +187,9 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 			}else if (memFS.isDir(uri) || uri.endsWith("..") ){
 				retval = new DavStoredObject(uri);
 				retval.setNullResource(false);
-				retval.setFolder(true);
-				retval.setCreationDate(new Date());
-				retval.setLastModified(new Date());
+				retval.setFolder(true); 
+				retval.setCreationDate(memFS.getCreationDate(uri ));
+				retval.setLastModified(memFS.getLastModified(uri ));
 				
 				return retval;
 			}
@@ -208,8 +208,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 					System_out_println(valTmp);
 				}
 				retval.setResourceLength(lenTmp); 
-				retval.setLastModified(new Date());
-				retval.setCreationDate( new Date());
+				retval.setLastModified(memFS.getCreationDate(uri ));
+				retval.setCreationDate(memFS.getLastModified(uri ));
 				return retval;
 			}else if (1==2){ 
 				throw new ObjectNotFoundException ();

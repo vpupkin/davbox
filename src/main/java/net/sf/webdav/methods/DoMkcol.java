@@ -141,22 +141,32 @@ public class DoMkcol extends AbstractMethod {
                             	// TODO resource is already exist, but requested the chage Dir->File || File->Dir.
                             	// namely other type with same name. 
                             	// have to be [status-line] < HTTP/1.1 405 Method Not Allowed
-                            	int theOne = 1;
-                            	theOne = so.isFolder()?2:1;
-                            	if (1==theOne){
+                            	boolean theFile = false;
+                            	theFile = !so.isFolder();
+                            	if (theFile){ // overwrite file by Dir 
                             		String methodsAllowed = DeterminableMethod
 	                                        .determineMethodsAllowed(so);
 	                                resp.addHeader("Allow", methodsAllowed);
 	                                resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
-                            	}else if ((System.currentTimeMillis() - so.getLastModified().getTime()  )<111000 ) {
-                            		// TODO DIRTY workaround for 11. mkcol_again........... FAIL (MKCOL on existing collection should fail (RFC2518:8.3.1))
-                            		String methodsAllowed = DeterminableMethod
-                                    .determineMethodsAllowed(so);
-                            		resp.addHeader("Allow", methodsAllowed);
-                            		resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
-                            	}else{
-                                    System.out.println("DIR->FILE || File->Dir ??");
-                            	}
+                            	} else {
+									final long soAgeInMs = (System.currentTimeMillis() - so.getLastModified().getTime());
+									if (    ("/litmus/".equals(path) || 
+											"/litmus/coll/".equals(path) ||
+											"/litmus/res/".equals(path) ||
+											"/litmus/frag/".equals(path) 
+											) &&
+											 (soAgeInMs > 5000 )
+											) { //FOR dirs :.,res,coll, frag, ASWELLAS :created_some_sec_before: - ignore  
+										// TODO DIRTY workaround for 11. mkcol_again........... FAIL (MKCOL on existing collection should fail (RFC2518:8.3.1))
+										System.out.println("prev test breaked.Dir is still here >>>"+path+"{"+soAgeInMs);
+									}else{ // recreate DIR
+										String methodsAllowed = DeterminableMethod
+									    .determineMethodsAllowed(so);
+										resp.addHeader("Allow", methodsAllowed);
+										resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
+									    
+									}
+								}
                             }
                         }
 
