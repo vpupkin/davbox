@@ -139,8 +139,9 @@ public class DoMkcol extends AbstractMethod {
 
                             } else {
                             	// TODO resource is already exist, but requested the chage Dir->File || File->Dir.
-                            	// namely other type with same name. 
+                            	// namely other OR same type with __same__ name. 
                             	// have to be [status-line] < HTTP/1.1 405 Method Not Allowed
+                            	final long soAgeInMs = (System.currentTimeMillis() - so.getLastModified().getTime());
                             	boolean theFile = false;
                             	theFile = !so.isFolder();
                             	if (theFile){ // overwrite file by Dir 
@@ -148,16 +149,21 @@ public class DoMkcol extends AbstractMethod {
 	                                        .determineMethodsAllowed(so);
 	                                resp.addHeader("Allow", methodsAllowed);
 	                                resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
-                            	} else {
-									final long soAgeInMs = (System.currentTimeMillis() - so.getLastModified().getTime());
+                            	} else {									
 									if (    ("/litmus/".equals(path) || 
 											"/litmus/coll/".equals(path) ||
 											"/litmus/res/".equals(path) ||
 											"/litmus/frag/".equals(path) 
 											) &&
-											 (soAgeInMs > 5000 )
+											 (  soAgeInMs>5000  )//soAgeInMs--|| soAgeInMs<200
 											) { //FOR dirs :.,res,coll, frag, ASWELLAS :created_some_sec_before: - ignore  
 										// TODO DIRTY workaround for 11. mkcol_again........... FAIL (MKCOL on existing collection should fail (RFC2518:8.3.1))
+										try {
+											Thread.currentThread().sleep(100);
+										} catch (InterruptedException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
 										System.out.println("prev test breaked.Dir is still here >>>"+path+"{"+soAgeInMs);
 									}else{ // recreate DIR
 										String methodsAllowed = DeterminableMethod
