@@ -23,8 +23,7 @@
 		</developerConnection>
 		<url>${l.base}/JSPWiki/Wiki.jsp?page=${pom.artifactId}</url>
 	</scm>
-
-
+ 
 	<distributionManagement>
 		<site>
 			<id>davrepo.gae</id>
@@ -60,11 +59,6 @@
 					<name>GAE</name>
 				</property>
 			</activation>
-			<properties>
-				<jdo.version>1.1.6g</jdo.version>
-				<!-- port defaults to 8080 -->
-				<gae.port>8888</gae.port>
-			</properties>
 		</profile>
 		<profile>
 			<id>TomcCAT7.0.x:8080</id>
@@ -98,9 +92,6 @@
 					<name>J2EE</name>
 				</property>
 			</activation>
-			<properties>
-				<jdo.version>1.1.7j-SNAPSHOT</jdo.version>
-			</properties>
 		</profile>
 	</profiles>
 	<build>
@@ -288,12 +279,6 @@
 			<version>${jdo.version}</version>
 		</dependency>
 
-		<!--  cc\co\llabor\cachefs\0.0.1-SNAPSHOT -->
-		<dependency>
-			<groupId>cc.co.llabor</groupId>
-			<artifactId>cachefs</artifactId>
-			<version>0.0.8</version>
-		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.htmlunit</groupId>
 			<artifactId>htmlunit</artifactId>

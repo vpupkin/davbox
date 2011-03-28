@@ -62,22 +62,26 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		
 	}	
 	public void removeObject(ITransaction transaction, String uri) {
- 
-			// delete file
-			try{
-				MemoryFileItem toDel = memFS.get(uri);
-				if (toDel==null)return;
-				System_out_println("<delete>\n\t<file name=\'"+toDel.getName()+"\'/>... ");
-				toDel.delete();
-				Object retval = memFS.delete(toDel);
-				System_out_println(retval+"\n</delete>");
-				return;
-			}catch (Exception e) {
-				// ?? dir
-				e.printStackTrace();
+		try{
+			if (memFS.isDir(uri)){
 				memFS.delDir(uri);
+			}else{
+				// delete file
+				
+					MemoryFileItem toDel = memFS.get(uri); 
+					if (toDel==null)return;
+					System_out_println("<delete>\n\t<file name=\'"+toDel.getName()+"\'/>... ");
+					toDel.delete();
+					Object retval = memFS.delete(toDel);
+					System_out_println(retval+"\n</delete>");
+					return;				
 			}
- 
+		}catch (Exception e) {
+			// ?? dir
+			e.printStackTrace();
+			//memFS.delDir(uri);
+		}
+
 	}
 
 	public void createFolder(ITransaction transaction, String folderUri) { 
@@ -138,10 +142,14 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
  		String[] list = memFS.list(folderUri);
  		String[] listNoDot = new String[list.length-1];
  		int i=0;
- 		for (String val:list){
- 			if (!".".equals( val )){
- 				listNoDot [i++]=val;
- 			}
+ 		try{
+	 		for (String val:list){
+	 			if (!".".equals( val )){
+	 				listNoDot [i++]=val;
+	 			}
+	 		}
+ 		}catch(java.lang.ArrayIndexOutOfBoundsException e){
+ 			e.printStackTrace();
  		}
 		return  listNoDot;
 	}
@@ -181,6 +189,12 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		uri = ("").equals( uri )? "/":uri;
 		//final String keyTmp = uri.substring(1);
 		try{
+			Date creationDate = new Date();
+			try{
+				creationDate = memFS.getCreationDate(uri );
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 			if ("/".equals(uri)||"/.".equals(uri) || uri.endsWith("/.")){
 				retval = new KeySetObject(keysTmp);
 				return retval;
@@ -188,8 +202,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				retval = new DavStoredObject(uri);
 				retval.setNullResource(false);
 				retval.setFolder(true); 
-				retval.setCreationDate(memFS.getCreationDate(uri ));
-				retval.setLastModified(memFS.getLastModified(uri ));
+				retval.setCreationDate(creationDate);
+				retval.setLastModified(creationDate);
 				
 				return retval;
 			}
@@ -208,8 +222,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 					System_out_println(valTmp);
 				}
 				retval.setResourceLength(lenTmp); 
-				retval.setLastModified(memFS.getCreationDate(uri ));
-				retval.setCreationDate(memFS.getLastModified(uri ));
+				retval.setLastModified(creationDate);
+				retval.setCreationDate(creationDate);
 				return retval;
 			}else if (1==2){ 
 				throw new ObjectNotFoundException ();
