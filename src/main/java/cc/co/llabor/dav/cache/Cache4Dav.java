@@ -124,13 +124,21 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 		MemoryFileItem retval; 
 		try {
 			retval = memFS.get(resourceUri);
+			if (retval ==null){
+				final MemoryFileItemFactory instance = MemoryFileItemFactory.getInstance();
+				retval =  instance.createItem(resourceUri, contentType, false, resourceUri);
+			}
+			
 			retval.setContentType("text");//contentType
-			retval.setContentType("ascii");//characterEncoding
+			retval.setContentType("ascii ");//characterEncoding
 			retval.setContentInputStream(content);	
 			// reStore at the cache
 			memFS.put(retval);
 			return retval.getSize();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NullPointerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
@@ -140,16 +148,31 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
  
 	public String[] getChildrenNames(ITransaction transaction, String folderUri) {
  		String[] list = memFS.list(folderUri);
- 		String[] listNoDot = new String[list.length-1];
+ 		int maxSize = list.length;
+ 		maxSize = maxSize==0?1:maxSize;
+ 		String[] listNoDot = new String[maxSize];
  		int i=0;
- 		try{
-	 		for (String val:list){
-	 			if (!".".equals( val )){
-	 				listNoDot [i++]=val;
-	 			}
-	 		}
- 		}catch(java.lang.ArrayIndexOutOfBoundsException e){
- 			e.printStackTrace();
+ 		for (String val:list){
+ 			if (!".".equals( val )){
+ 				listNoDot [i++]=val;
+ 			}else{
+ 				maxSize--;
+ 				listNoDot [i++]=".";
+ 			}
+ 		}
+ 		// adjust retval-lengh 
+ 		if(maxSize < listNoDot.length){
+ 			String[] listtmp = new String[maxSize];
+ 			int done = 0;
+ 			for (String v:listNoDot){
+ 				if (!".".equals( v )){
+ 					listtmp[done++] = v;
+ 				}
+ 			}
+ 			listNoDot = listtmp;
+ 		}
+ 		if (listNoDot.length == 1 && listNoDot[0]== null){
+ 			listNoDot = new String[]{};
  		}
 		return  listNoDot;
 	}
@@ -193,7 +216,7 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 			try{
 				creationDate = memFS.getCreationDate(uri );
 			}catch(Exception e){
-				e.printStackTrace();
+				//syso e.printStackTrace();
 			}
 			if ("/".equals(uri)||"/.".equals(uri) || uri.endsWith("/.")){
 				retval = new KeySetObject(keysTmp);
