@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import net.sf.webdav.ITransaction;
 import net.sf.webdav.IWebdavStore;
 import net.sf.webdav.StoredObject; 
+import net.sf.webdav.exceptions.ObjectNotFoundException;
 import cc.co.llabor.cache.MemoryFileItem;
 import cc.co.llabor.cache.MemoryFileItemFactory;
 import cc.co.llabor.dav.AbstractTransactionalDaver;
@@ -208,6 +209,12 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 		uri = ("").equals( uri )? "/":uri;
 		//final String keyTmp = uri.substring(1);
 		try{
+			Date creationDate = new Date();
+			try{
+				creationDate = memFS.getCreationDate(uri );
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 			if ("/".equals(uri)||"/.".equals(uri) || uri.endsWith("/.")){
 				retval = new KeySetObject(keysTmp);
 				return retval;
@@ -215,8 +222,8 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 				retval = new DavStoredObject(uri);
 				retval.setNullResource(false);
 				retval.setFolder(true);
-				retval.setCreationDate(new Date());
-				retval.setLastModified(new Date());
+				retval.setCreationDate(creationDate);
+				retval.setLastModified(creationDate);
 				
 				return retval;
 			}
@@ -235,9 +242,11 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 					System_out_println(valTmp);
 				}
 				retval.setResourceLength(lenTmp); 
-				retval.setLastModified(new Date());
-				retval.setCreationDate( new Date());
+				retval.setLastModified(creationDate);
+				retval.setCreationDate(creationDate);
 				return retval;
+			}else if (1==2){ 
+				throw new ObjectNotFoundException ();
 			}
  
  
