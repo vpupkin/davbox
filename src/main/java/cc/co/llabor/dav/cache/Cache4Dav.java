@@ -230,7 +230,8 @@ public  class Cache4Dav extends AbstractTransactionalDaver implements IWebdavSto
 				
 				return retval;
 			}
-			Object valTmp = memFS.get( uri.replace("//", "/") );
+			uri =  uri.replace("//", "/");
+			Object valTmp = memFS.get(uri );
 			if (valTmp != null){
 				retval = new StoredObject();
 				retval.setFolder(false);

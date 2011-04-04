@@ -272,13 +272,14 @@
 		</dependency>
 		<!-- specify the dependent JDBC driver here -->
 
-		<!-- jdo -->
+		<!-- jdo
 		<dependency>
 			<groupId>cc.co.llabor</groupId>
 			<artifactId>jdo</artifactId>
 			<version>${jdo.version}</version>
 		</dependency>
 
+ -->
 		<dependency>
 			<groupId>net.sourceforge.htmlunit</groupId>
 			<artifactId>htmlunit</artifactId>
