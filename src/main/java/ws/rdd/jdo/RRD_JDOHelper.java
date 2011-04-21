@@ -53,12 +53,12 @@ public class RRD_JDOHelper implements InstanceLifecycleListener {
 //			javax.jdo.option.ConnectionDriverName 	
 //			org.apache.derby.jdbc.EmbeddedDriver 	
 //			Derby embeded JDBC driver class			
-//			properties.setProperty("javax.jdo.PersistenceManagerFactoryClass", "org.datanucleus.jdo.JDOPersistenceManagerFactory");
-//			properties.setProperty("javax.jdo.option.ConnectionDriverName","org.apache.derby.jdbc.EmbeddedDriver");
-//			properties.setProperty("javax.jdo.option.ConnectionURL","jdbc:derby:;databaseName=junit_metastore_db;create=true");
-//			properties.setProperty("javax.jdo.option.ConnectionUserName","login");
-//			properties.setProperty("javax.jdo.option.ConnectionPassword","password");			
-//			PMF = JDOHelper.getPersistenceManagerFactory(properties);
+			properties.setProperty("javax.jdo.PersistenceManagerFactoryClass", "org.datanucleus.jdo.JDOPersistenceManagerFactory");
+			properties.setProperty("javax.jdo.option.ConnectionDriverName","org.apache.derby.jdbc.EmbeddedDriver");
+			properties.setProperty("javax.jdo.option.ConnectionURL","jdbc:derby:;databaseName=junit_metastore_db;create=true");
+			properties.setProperty("javax.jdo.option.ConnectionUserName","login");
+			properties.setProperty("javax.jdo.option.ConnectionPassword","password");			
+			PMF = JDOHelper.getPersistenceManagerFactory(properties);
 
 
 		}
