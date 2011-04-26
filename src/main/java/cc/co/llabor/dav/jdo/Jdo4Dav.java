@@ -263,7 +263,7 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}  
-		if (retval == null && !"/.".equals(uri)){ // TO NULLOBJ 
+		if (retval == null && (!"/.".equals(uri)) &&  (  !"/null".equals(uri))  ){ // TO NULLOBJ 
 			retval = null;
 		}else{
 			retval = theNull;
