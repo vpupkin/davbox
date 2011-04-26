@@ -587,7 +587,9 @@
 			<groupId>org.datanucleus</groupId>
 			<artifactId>datanucleus-rdbms</artifactId>
 			<version>1.1.5</version>
+			<!-- 
 			<scope>test</scope>
+			 -->
 		</dependency>
 
 
