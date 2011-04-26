@@ -457,6 +457,30 @@
 
 			<version>1.0.6.final</version>
 		</dependency>
+		<dependency>
+			<groupId>org.datanucleus</groupId>
+			<artifactId>datanucleus-core</artifactId>
+			<version>1.1.5</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.transaction</groupId>
+					<artifactId>transaction-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>datanucleus-jpa</artifactId>
+			<version>1.1.5</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>geronimo-jpa_3.0_spec</artifactId>
+			<version>1.1.1</version>
+			<scope>runtime</scope>
+		</dependency>
 		<!--
 			[INFO] +- mysql:mysql-connector-java:jar:5.0.4:test [INFO] +-
 			org.apache.derby:derby:jar:10.6.1.0:test [INFO] +-
@@ -479,42 +503,10 @@
 			</dependency>
 		-->
 
-		<dependency>
-			<groupId>org.datanucleus</groupId>
-			<artifactId>datanucleus-rdbms</artifactId>
-
-			<version>1.1.5</version>
-			<scope>runtime</scope>
-
-		</dependency>
 
 
-		<dependency>
-			<groupId>com.google.appengine</groupId>
-			<artifactId>datanucleus-jpa</artifactId>
-			<version>1.1.5</version>
-			<scope>runtime</scope>
-		</dependency>
 
 
-		<dependency>
-			<groupId>org.datanucleus</groupId>
-			<artifactId>datanucleus-core</artifactId>
-			<version>1.1.5</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.transaction</groupId>
-					<artifactId>transaction-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.appengine</groupId>
-			<artifactId>geronimo-jpa_3.0_spec</artifactId>
-			<version>1.1.1</version>
-
-		</dependency>
 
 		<dependency>
 			<groupId>com.google.appengine</groupId>
@@ -559,19 +551,43 @@
 			<version>1.0.6.final</version>
 		</dependency>
 
+
+
+
+
+
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-api-labs</artifactId>
+			<version>${gae.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+
+
+
+
+
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-stubs</artifactId>
 			<version>${gae.version}</version>
-
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-local-runtime</artifactId>
 			<version>${gae.version}</version>
-			<scope>provided</scope>
+			<scope>test</scope>
 
+		</dependency>
+
+		<dependency>
+			<groupId>org.datanucleus</groupId>
+			<artifactId>datanucleus-rdbms</artifactId>
+			<version>1.1.5</version>
+			<scope>test</scope>
 		</dependency>
 
 
