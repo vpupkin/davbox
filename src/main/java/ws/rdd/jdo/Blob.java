@@ -29,7 +29,8 @@ public class Blob implements Serializable{
     
     
     @Persistent
-    private byte[] data;
+    //private byte[] data;//j2ee
+    private com.google.appengine.api.datastore.Blob data;//j2ee
     @Persistent (name = "name", column = "Na_Me")
     private String name;
     @Persistent
@@ -52,7 +53,7 @@ public class Blob implements Serializable{
     
     
 	public byte[] getData() {
-			 return this.data  ;
+			 return this.data.getBytes()  ;
 	}
 	
 
@@ -82,7 +83,7 @@ public class Blob implements Serializable{
 	}
 
 	public void setData(byte[] buffer) {
-		this.data = buffer;
+		this.data = new com.google.appengine.api.datastore.Blob(buffer);
 		this.update();		
 	}    
 
