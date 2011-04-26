@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cc.co.llabor</groupId>
@@ -19,18 +18,24 @@
 		</developerConnection>
 		<url>${l.base}/JSPWiki/Wiki.jsp?page=${pom.artifactId}</url>
 	</scm>
-	<!-- this section is common for all l-parent childs ))) -->	
-	
+	<!-- this section is common for all l-parent childs ))) -->
+
 	<description>
 		provide the basic WebDav functionality for CacheFSs..
 	</description>
 	<packaging>war</packaging>
-   
+
 	<distributionManagement>
 		<site>
 			<id>davrepo.gae</id>
-			<!-- GAE dav:http://localhost:8888/jdo/${pom.artifactId}-${pom.groupId}-${pom.artifactId} -->
-			<!-- TC70 dav:http://localhost:8080/davbox/jdo/${pom.artifactId}-${pom.groupId}-${pom.artifactId} -->
+			<!--
+				GAE
+				dav:http://localhost:8888/jdo/${pom.artifactId}-${pom.groupId}-${pom.artifactId}
+			-->
+			<!--
+				TC70
+				dav:http://localhost:8080/davbox/jdo/${pom.artifactId}-${pom.groupId}-${pom.artifactId}
+			-->
 
 			<url>
 				dav:http://localhost:8080/davbox/ca/44/${pom.version}/${pom.artifactId}/${pom.groupId}/${pom.artifactId}/
@@ -38,7 +43,7 @@
 		</site>
 	</distributionManagement>
 	<properties>
-	<gae.port>9393</gae.port>
+		<gae.port>9393</gae.port>
 		<slf4j.version>1.5.8</slf4j.version>
 		<jetty.version>6.1.22</jetty.version>
 		<tika.version>0.6</tika.version>
@@ -48,7 +53,9 @@
 		<gae.version>1.3.4</gae.version>
 		<!-- GWT version -->
 		<gwt.version>1.7.1</gwt.version>
-		<!--			Upload to http://0.latest.<applicationName>.appspot.com by 	default		-->
+		<!--
+			Upload to http://0.latest.<applicationName>.appspot.com by default
+		-->
 		<gae.application.version>0</gae.application.version>
 
 		<jdo.version>1.1.7j-SNAPSHOT</jdo.version>
@@ -70,7 +77,7 @@
 					<name>TC7</name>
 				</property>
 			</activation>
- 
+
 		</profile>
 
 		<profile>
@@ -82,6 +89,31 @@
 				</property>
 			</activation>
 		</profile>
+		<profile>
+			<id>WINTMP</id>
+			<activation>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+			<properties>
+				<TMP_BASE>${env.TMP}/davbox/</TMP_BASE>
+			</properties>
+
+		</profile>
+		<profile>
+			<id>LINUXtmp</id>
+			<activation>
+				<os>
+					<name>Linux</name>
+				</os>
+			</activation>
+			<properties>
+				<TMP_BASE>/tmp/davbox/</TMP_BASE>
+			</properties>
+		</profile>
+
+
 	</profiles>
 	<build>
 
@@ -97,8 +129,8 @@
 					<server>${tomcat.principal}</server>
 
 				</configuration>
-			</plugin>			
-		
+			</plugin>
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jspc-maven-plugin</artifactId>
@@ -118,8 +150,7 @@
 
 					<!-- webXml>${basedir}/target/jspCweb.xml</webXml> -->
 					<injectString>
-						&lt;!-- [INSERT FRAGMENT HERE] --&gt;
-					</injectString>
+						&lt;!-- [INSERT FRAGMENT HERE] --&gt; </injectString>
 
 				</configuration>
 				<dependencies>
@@ -175,9 +206,8 @@
 					<!--<noServer>false</noServer>-->
 
 					<!--
-						TODO This should help running GAE stuff in
-						hosted mode (when gwt-maven-plugin-1.2 is
-						released, see
+						TODO This should help running GAE stuff in hosted mode (when
+						gwt-maven-plugin-1.2 is released, see
 						http://jira.codehaus.org/browse/MGWT-112)
 					-->
 					<server>
@@ -188,22 +218,20 @@
 					<style>DETAILED</style>
 					<webXml>war/WEB-INF/web.xml</webXml>
 					<!--
-						this parameter is VERY important with automatic
-						mode - has to match the version in your declared
-						deps
+						this parameter is VERY important with automatic mode - has to
+						match the version in your declared deps
 					-->
 					<!--
-						if this is set incorrect (not a match), or left
-						out (default is 1.5.2 for 2.0-beta23) you will
-						have mysterious errors
+						if this is set incorrect (not a match), or left out (default is
+						1.5.2 for 2.0-beta23) you will have mysterious errors
 					-->
 					<gwtVersion>${gwt.version}</gwtVersion>
 				</configuration>
 				<executions>
 					<!--
 						<execution> <id>generateAsynch</id>
-						<phase>generate-sources</phase> <goals>
-						<goal>generateAsync</goal> </goals> </execution>
+						<phase>generate-sources</phase> <goals> <goal>generateAsync</goal>
+						</goals> </execution>
 					-->
 					<execution>
 						<phase>compile</phase>
@@ -215,8 +243,8 @@
 			</plugin>
 
 			<!--
-				The actual maven-gae-plugin. Type "mvn gae:run" to run
-				project, "mvn gae:deploy" to upload to GAE.
+				The actual maven-gae-plugin. Type "mvn gae:run" to run project, "mvn
+				gae:deploy" to upload to GAE.
 			-->
 
 			<plugin>
@@ -224,8 +252,8 @@
 				<artifactId>maven-gae-plugin</artifactId>
 				<version>0.5.9</version>
 				<configuration>
-					<!-- jvmFlags>
-						<jvmFlag>-Xdebug</jvmFlag>
+					<!--
+						jvmFlags> <jvmFlag>-Xdebug</jvmFlag>
 						<jvmFlag>-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000</jvmFlag>
 						</jvmFlags>
 					-->
@@ -235,14 +263,13 @@
 
 				</configuration>
 			</plugin>
- <plugin>
+			<plugin>
 				<groupId>org.datanucleus</groupId>
 				<artifactId>maven-datanucleus-plugin</artifactId>
 				<version>1.1.4</version>
 				<configuration>
 					<!--
-						Make sure this path contains your persistent
-						classes!
+						Make sure this path contains your persistent classes!
 					-->
 					<mappingIncludes>
 						**/jdo/*.class 
@@ -292,30 +319,27 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.0.4</version>
-			 
+
 		</dependency>
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
 			<version>10.6.1.0</version>
-			 
+
 		</dependency>
 		<dependency>
 			<groupId>hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<version>1.8.0.4</version>
-			 
+
 		</dependency>
 		<!-- specify the dependent JDBC driver here -->
 
-		<!-- jdo
-		<dependency>
-			<groupId>cc.co.llabor</groupId>
-			<artifactId>jdo</artifactId>
-			<version>${jdo.version}</version>
-		</dependency>
-
- -->
+		<!--
+			jdo <dependency> <groupId>cc.co.llabor</groupId>
+			<artifactId>jdo</artifactId> <version>${jdo.version}</version>
+			</dependency>
+		-->
 		<dependency>
 			<groupId>net.sourceforge.htmlunit</groupId>
 			<artifactId>htmlunit</artifactId>
@@ -395,7 +419,6 @@
 		<!--
 			<dependency><groupId>batik</groupId><artifactId>batik-ext</artifactId>
 			<version>${batik.version}</version><optional>true</optional></dependency>
-			
 		-->
 
 
@@ -412,9 +435,8 @@
 			<version>2.3-eb</version>
 			<exclusions>
 				<!--
-					exclude the legacy javax.transaction:transaction-api
-					and replace it with javax.transaction:jta (it
-					appears to be the same thing)
+					exclude the legacy javax.transaction:transaction-api and replace it
+					with javax.transaction:jta (it appears to be the same thing)
 				-->
 				<exclusion>
 					<groupId>javax.transaction</groupId>
@@ -435,43 +457,34 @@
 
 			<version>1.0.6.final</version>
 		</dependency>
-		<!-- 
-[INFO] +- mysql:mysql-connector-java:jar:5.0.4:test
-[INFO] +- org.apache.derby:derby:jar:10.6.1.0:test
-[INFO] +- hsqldb:hsqldb:jar:1.8.0.4:test
-[INFO] +- com.google.appengine.orm:datanucleus-appengine:jar:1.0.6.final:compile
-[INFO] +- org.datanucleus:datanucleus-rdbms:jar:1.1.5:compile
-[INFO] |  \- javax.transaction:transaction-api:jar:1.1:compile
-[INFO] +- org.datanucleus:datanucleus-core:jar:1.1.5:compile
-[INFO] +- com.google.appengine:datanucleus-jpa:jar:1.1.5:runtime
-[INFO] +- javax.jdo:jdo2-api:jar:2.3-eb:compile
-[INFO] \- com.google.appengine:appengine-api-1.0-sdk:jar:1.3.4:compile
-
- 
- 		
-		<dependency>
-			<groupId>org.datanucleus</groupId>
-			<artifactId>datanucleus-rdbms</artifactId>
-
-			<version>1.1.5</version>
-		</dependency>
+		<!--
+			[INFO] +- mysql:mysql-connector-java:jar:5.0.4:test [INFO] +-
+			org.apache.derby:derby:jar:10.6.1.0:test [INFO] +-
+			hsqldb:hsqldb:jar:1.8.0.4:test [INFO] +-
+			com.google.appengine.orm:datanucleus-appengine:jar:1.0.6.final:compile
+			[INFO] +- org.datanucleus:datanucleus-rdbms:jar:1.1.5:compile [INFO]
+			| \- javax.transaction:transaction-api:jar:1.1:compile [INFO] +-
+			org.datanucleus:datanucleus-core:jar:1.1.5:compile [INFO] +-
+			com.google.appengine:datanucleus-jpa:jar:1.1.5:runtime [INFO] +-
+			javax.jdo:jdo2-api:jar:2.3-eb:compile [INFO] \-
+			com.google.appengine:appengine-api-1.0-sdk:jar:1.3.4:compile
 
 
-		<dependency>
-			<groupId>com.google.appengine</groupId>
-			<artifactId>datanucleus-jpa</artifactId>
-			<version>1.1.5</version>
-			 
-		</dependency>
 
--->
+			<dependency> <groupId>org.datanucleus</groupId>
+			<artifactId>datanucleus-rdbms</artifactId> <version>1.1.5</version>
+			</dependency> <dependency> <groupId>com.google.appengine</groupId>
+			<artifactId>datanucleus-jpa</artifactId> <version>1.1.5</version>
+
+			</dependency>
+		-->
 
 		<dependency>
 			<groupId>org.datanucleus</groupId>
 			<artifactId>datanucleus-rdbms</artifactId>
 
 			<version>1.1.5</version>
-<scope>runtime</scope>			 
+			<scope>runtime</scope>
 
 		</dependency>
 
@@ -480,10 +493,10 @@
 			<groupId>com.google.appengine</groupId>
 			<artifactId>datanucleus-jpa</artifactId>
 			<version>1.1.5</version>
-<scope>runtime</scope>			 
+			<scope>runtime</scope>
 		</dependency>
 
- 
+
 		<dependency>
 			<groupId>org.datanucleus</groupId>
 			<artifactId>datanucleus-core</artifactId>
@@ -500,7 +513,7 @@
 			<groupId>com.google.appengine</groupId>
 			<artifactId>geronimo-jpa_3.0_spec</artifactId>
 			<version>1.1.1</version>
-			 
+
 		</dependency>
 
 		<dependency>
@@ -550,7 +563,7 @@
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-stubs</artifactId>
 			<version>${gae.version}</version>
-			 
+
 		</dependency>
 
 		<dependency>
@@ -558,7 +571,7 @@
 			<artifactId>appengine-local-runtime</artifactId>
 			<version>${gae.version}</version>
 			<scope>provided</scope>
-			 
+
 		</dependency>
 
 

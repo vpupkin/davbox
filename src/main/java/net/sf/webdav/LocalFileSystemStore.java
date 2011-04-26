@@ -17,16 +17,17 @@ package net.sf.webdav;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.File; 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import cc.co.llabor.cache.FileCache;
 
 import net.sf.webdav.exceptions.WebdavException;
 
@@ -109,8 +110,8 @@ public class LocalFileSystemStore implements IWebdavStore {
         LOG.trace("LocalFileSystemStore.setResourceContent(" + uri + ")");
         File file = new File(_root, uri);
         try {
-            OutputStream os = new BufferedOutputStream(new FileOutputStream(
-                    file), BUF_SIZE);
+            OutputStream newFileOutputStream = FileCache.newFileOutputStream( file);
+			OutputStream os = new BufferedOutputStream(newFileOutputStream, BUF_SIZE);
             try {
                 int read;
                 byte[] copyBuffer = new byte[BUF_SIZE];
@@ -126,10 +127,24 @@ public class LocalFileSystemStore implements IWebdavStore {
                 }
             }
         } catch (IOException e) {
-            LOG.error("LocalFileSystemStore.setResourceContent(" + uri
-                    + ") failed");
+            LOG.error("LocalFileSystemStore.setResourceContent(" + uri  + ") failed");
             throw new WebdavException(e);
-        }
+        } catch (ClassNotFoundException e) {
+            LOG.error("LocalFileSystemStore.setResourceContent(" + uri  + ") failed");
+            throw new WebdavException(e);
+		} catch (NoSuchMethodException e) {
+            LOG.error("LocalFileSystemStore.setResourceContent(" + uri  + ") failed");
+            throw new WebdavException(e);
+		} catch (InstantiationException e) {
+            LOG.error("LocalFileSystemStore.setResourceContent(" + uri  + ") failed");
+            throw new WebdavException(e);
+		} catch (IllegalAccessException e) {
+            LOG.error("LocalFileSystemStore.setResourceContent(" + uri  + ") failed");
+            throw new WebdavException(e);
+		} catch (InvocationTargetException e) {
+            LOG.error("LocalFileSystemStore.setResourceContent(" + uri  + ") failed");
+            throw new WebdavException(e);
+		}
         long length = -1;
 
         try {
@@ -180,10 +195,25 @@ public class LocalFileSystemStore implements IWebdavStore {
 
         InputStream in;
         try {
-            in = new BufferedInputStream(new FileInputStream(file));
-        } catch (IOException e) {
-            LOG.error("LocalFileSystemStore.getResourceContent(" + uri
-                    + ") failed");
+        	InputStream newFileInputStream = FileCache.newFileInputStream( file);
+            in = new BufferedInputStream(newFileInputStream);
+        } catch (ClassNotFoundException e) {
+            LOG.error("LocalFileSystemStore.getResourceContent(" + uri + ") failed");
+            throw new WebdavException(e);
+		} catch (NoSuchMethodException e) {
+            LOG.error("LocalFileSystemStore.getResourceContent(" + uri + ") failed");
+            throw new WebdavException(e);
+		} catch (InstantiationException e) {
+            LOG.error("LocalFileSystemStore.getResourceContent(" + uri + ") failed");
+            throw new WebdavException(e);
+		} catch (IllegalAccessException e) {
+            LOG.error("LocalFileSystemStore.getResourceContent(" + uri + ") failed");
+            throw new WebdavException(e);
+		} catch (InvocationTargetException e) {
+            LOG.error("LocalFileSystemStore.getResourceContent(" + uri + ") failed");
+            throw new WebdavException(e);
+		} catch (Exception e) {//(IOException e) {
+            LOG.error("LocalFileSystemStore.getResourceContent(" + uri + ") failed");
             throw new WebdavException(e);
         }
         return in;
