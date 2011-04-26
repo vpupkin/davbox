@@ -9,17 +9,22 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
-//import com.google.appengine.api.datastore.Key;
 
+// GAE KEY
+import com.google.appengine.api.datastore.Key;
+
+//@PersistenceCapable(identityType = IdentityType.DATASTORE )
 @PersistenceCapable(identityType = IdentityType.DATASTORE )
 public class Blob implements Serializable{
  
 	private static final long serialVersionUID = 9196958553575483987L;
 
 	@PrimaryKey
-    @Persistent(  valueStrategy =  IdGeneratorStrategy.INCREMENT  )
-    //private Key key;
-    private BigInteger key;
+    //@Persistent(  valueStrategy =  IdGeneratorStrategy.INCREMENT  ) // J2EE
+    //private BigInteger key; // J2EE
+	@Persistent(  valueStrategy =  IdGeneratorStrategy.IDENTITY ) // GAE
+    private Key key; // GAE
+
     
     
     
@@ -40,7 +45,8 @@ public class Blob implements Serializable{
 	
     // Accessors for the fields.  JDO doesn't use these, but your application does.
 
-    public BigInteger getKey() {
+    //public BigInteger getKey() {// j2ee
+    public Key getKey() {// j2ee
         return key;
     }
     
@@ -80,7 +86,8 @@ public class Blob implements Serializable{
 		this.update();		
 	}    
 
-	public void setKey(BigInteger key) {
+	//public void setKey(BigInteger key) { // j2ee
+	public void setKey(Key key) { // GAE
 		this.key = key;
 	}    
 

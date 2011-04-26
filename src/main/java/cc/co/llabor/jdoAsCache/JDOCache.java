@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import javax.jdo.Extent;
 import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 import javax.jdo.Transaction; 
 
@@ -301,7 +302,8 @@ public class JDOCache implements Cache {
 
 	public Object put(Object key, Object arg1) {
 		File fileTmp =  obj2blob(arg1); 
-		PersistenceManager pm = RRD_JDOHelper.getInstance().getPMF().getPersistenceManager();
+		PersistenceManagerFactory pmf = RRD_JDOHelper.getInstance().getPMF();
+		PersistenceManager pm = pmf.getPersistenceManager();
 		Object id  = key;
 		if ( 1==2 && exists(id)) {
 			Object val =  get(id);
