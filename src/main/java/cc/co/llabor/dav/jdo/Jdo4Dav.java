@@ -213,7 +213,7 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 			try{
 				creationDate = memFS.getCreationDate(uri );
 			}catch(Exception e){
-				e.printStackTrace();
+				log.debug(uri, e);
 			}
 			if ("/".equals(uri)||"/.".equals(uri) || uri.endsWith("/.")){
 				retval = new KeySetObject(keysTmp);
