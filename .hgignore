@@ -13,3 +13,7 @@ syntax: regexp
 
 syntax: regexp
 ^release\.properties$
+syntax: regexp
+^\$\{TMP_BASE\}$
+syntax: regexp
+^junit_metastore_db$
