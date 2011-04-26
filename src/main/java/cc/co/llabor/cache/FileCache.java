@@ -167,7 +167,7 @@ public class FileCache implements Cache {
 	}
 
 
-	private synchronized InputStream newFileInputStream(File fTmp)
+	public static synchronized InputStream newFileInputStream(File fTmp)
 			throws ClassNotFoundException, NoSuchMethodException,
 			InstantiationException, IllegalAccessException,
 			InvocationTargetException {
@@ -396,11 +396,11 @@ public class FileCache implements Cache {
 	}
 
 
-	Class fosClazz = null;
-	Class fisClazz = null; 
-	Constructor constructorITmp = null;
-	Constructor constructorOTmp = null;
-	{
+	static Class fosClazz = null;
+	static Class fisClazz = null; 
+	static Constructor constructorITmp = null;
+	static Constructor constructorOTmp = null;
+	static {
 		try {
 			fosClazz =  Class.forName("java.io.FileOutputStream");
 			constructorOTmp = fosClazz.getConstructor(File.class);
@@ -428,7 +428,7 @@ public class FileCache implements Cache {
 			e.printStackTrace();
 		}
 	}
-	private synchronized OutputStream newFileOutputStream(File fileTmp)
+	public static synchronized OutputStream newFileOutputStream(File fileTmp)
 			throws ClassNotFoundException, NoSuchMethodException,
 			InstantiationException, IllegalAccessException,
 			InvocationTargetException {
