@@ -1,0 +1,9 @@
+<datastore-indexes  autoGenerate="true">
+	<datastore-index kind="Blob"
+		ancestor="true" source="manual"
+	>
+		<property name="name" direction="desc" />
+		<property name="createDate" direction="asc" />
+		<property name="updateDate" direction="asc" />
+	</datastore-index>
+</datastore-indexes>

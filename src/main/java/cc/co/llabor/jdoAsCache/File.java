@@ -1,9 +1,9 @@
 package cc.co.llabor.jdoAsCache;
  
 
+import cc.co.llabor.jdo.Blob;
 import net.sf.jsr107cache.Cache;
 
-import ws.rdd.jdo.Blob; 
 
 /** 
  * <b>Description:File-fantom at the JDO-world </b>

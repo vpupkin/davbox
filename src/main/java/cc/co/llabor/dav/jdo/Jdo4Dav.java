@@ -262,7 +262,9 @@ public class Jdo4Dav extends AbstractTransactionalDaver implements IWebdavStore 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}  
+		} catch( Throwable e){
+			log.debug(" getStoredObject(ITransaction transaction, String uri == "+uri, e );
+		}
 		if (retval == null && (!"/.".equals(uri)) &&  (  !"/null".equals(uri))  ){ // TO NULLOBJ 
 			retval = null;
 		}else{

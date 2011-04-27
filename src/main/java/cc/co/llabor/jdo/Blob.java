@@ -1,7 +1,6 @@
-package ws.rdd.jdo;
+package cc.co.llabor.jdo; 
  
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -11,19 +10,23 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 import com.google.appengine.api.datastore.Key;
 
-@PersistenceCapable(identityType = IdentityType.DATASTORE )
-public class GAEBlob implements Serializable{
- 
-	private static final long serialVersionUID = 9196958553575483987L;
+@PersistenceCapable(identityType = IdentityType.APPLICATION )
+public class Blob implements Serializable{
+
+	/**
+	 * @author vipup
+	 */
+	private static final long serialVersionUID = -6998242894015236998L;
 
 	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
     private Key key;
-    //private BigInteger key; 
-    @Persistent
-    private com.google.appengine.api.datastore.Blob data;
     
-    @Persistent (name = "name", column = "Na_Me")
+	@Persistent(serialized="true" )
+    private com.google.appengine.api.datastore.Blob data;
+     
+    
+    @Persistent
     private String name;
     @Persistent
     private Date createDate = new Date();
@@ -31,7 +34,7 @@ public class GAEBlob implements Serializable{
     @Persistent
     private Date updateDate;    
 
-    public GAEBlob( byte[] data) {
+    public Blob( byte[] data) {
 		super(); 
 		this.setData( data );
 	}
@@ -44,12 +47,12 @@ public class GAEBlob implements Serializable{
     
     
 	public byte[] getData() {
-			 return this.data.getBytes()  ;
+			 return this.data.getBytes() ;
 	}
 	
 
 	private void update() {
-		setUpdateDate(new Date () );
+		this.updateDate =  new Date ();
 	}
 
 	public String getName() {
@@ -75,11 +78,7 @@ public class GAEBlob implements Serializable{
 
 	public void setData(byte[] buffer) {
 		this.data = new com.google.appengine.api.datastore.Blob(buffer);
-		this.update();		
-	}    
-
-	public void setKey(Key key) {
-		this.key = key;
-	}    
+		
+	}
 
 }

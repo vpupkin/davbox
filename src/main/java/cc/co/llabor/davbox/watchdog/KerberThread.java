@@ -15,7 +15,7 @@ import cc.co.llabor.dav.cache.Cache4Dav;
  * Creation:  20.09.2010::19:44:55<br> 
  */
 public class KerberThread extends Thread {
-	static final Logger log = LoggerFactory.getLogger(Cache4Dav.class);
+	static final Logger log = LoggerFactory.getLogger(KerberThread.class);
 	
 	public void run() { 
 		letMeOut();
