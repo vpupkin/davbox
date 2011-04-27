@@ -23,9 +23,10 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 import javax.jdo.Transaction; 
 
+import cc.co.llabor.jdo.Blob;
+import cc.co.llabor.jdo.RRD_JDOHelper;
+
  
-import ws.rdd.jdo.Blob;
-import ws.rdd.jdo.RRD_JDOHelper;
 
 import net.sf.jsr107cache.Cache;
 import net.sf.jsr107cache.CacheEntry;
@@ -101,12 +102,14 @@ public class JDOCache implements Cache {
 		}
 	}
 
+	final static int MAX_TRY = 3;
+	int tryCount = 0; 
 	public Object get(Object key) {
 		PersistenceManager pm = RRD_JDOHelper.getInstance().getPMF()
 				.getPersistenceManager();
 		Query query = pm.newQuery(Blob.class);
 		query.setFilter("name == nameParam");
-		query.setOrdering("createDate desc");
+		//query.setOrdering("createDate desc");
 		query.declareParameters("String nameParam");
 		Object retval = null;
 		try {
@@ -118,6 +121,17 @@ public class JDOCache implements Cache {
 				return retval;
 			} else {
 				return null;
+			}
+		} catch (com.google.appengine.api.datastore.DatastoreNeedIndexException e ){
+			if (tryCount <MAX_TRY){//http://www.mail-archive.com/google-appengine@googlegroups.com/msg13904.html
+				tryCount ++;
+				log.warning("index waiting #"+tryCount+"...");
+				try{
+					Thread.sleep(200);
+					return get(key);
+				}catch(Throwable e1){}
+			}else{
+				throw e;
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -317,7 +331,7 @@ public class JDOCache implements Cache {
 //					Blob blobTmp = new Blob(fileTmp.getData());
 //					blobTmp .setName (fileTmp.getName()  );
 					// value-strategy 
-					//javax.jdo.JDOFatalUserException: An object of class "ws.rdd.jdo.Blob" uses SingleFieldIdentity using the field "key" yet this field has not had its value set! Either set the field manually, or set a value-strategy for that field.
+					//javax.jdo.JDOFatalUserException: An object of class "cc.co.llabor.jdo.Blob" uses SingleFieldIdentity using the field "key" yet this field has not had its value set! Either set the field manually, or set a value-strategy for that field.
 					System.out.println("Persisting ..."); 
 					tx.begin(); 
 					pm.makePersistent(fileTmp.asBlob() );
@@ -391,7 +405,7 @@ public class JDOCache implements Cache {
 				.getPersistenceManager();
 		Query query = pm.newQuery(Blob.class);
 		query.setFilter("name == nameParam");
-		query.setOrdering("createDate desc");
+		//query.setOrdering("createDate desc");
 		query.declareParameters("String nameParam");
 		Object retval = null;
 		try {

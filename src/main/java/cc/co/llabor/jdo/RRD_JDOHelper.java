@@ -1,4 +1,4 @@
-package ws.rdd.jdo;
+package cc.co.llabor.jdo;
 
 import java.util.Properties;
 
