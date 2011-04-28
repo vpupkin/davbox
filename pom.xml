@@ -35,11 +35,16 @@
 			<!--
 				TC70
 				dav:http://localhost:8080/davbox/jdo/${pom.artifactId}-${pom.groupId}-${pom.artifactId}
-			-->
-
+		
 			<url>
 				dav:http://localhost:8080/davbox/ca/44/${pom.version}/${pom.artifactId}/${pom.groupId}/${pom.artifactId}/
 			</url>
+			-->
+			<url>
+				dav:https://davrepo.appspot.com/jdo/site/${pom.version}/${pom.artifactId}/${pom.groupId}/${pom.artifactId}/
+			</url>
+			
+			
 		</site>
 	</distributionManagement>
 	<properties>
