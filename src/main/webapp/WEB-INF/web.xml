@@ -11,7 +11,7 @@
 		<load-on-startup>1</load-on-startup><!-- Must -->
 	</servlet>
 
- 
+
 <!-- CacheWebDav - access to local Cache -->
 	<servlet>
 		<servlet-name>CacheWebDav</servlet-name>
@@ -65,6 +65,19 @@
 		<servlet-class>cc.co.llabor.davbox.watchdog.InitService</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	
+ 	<servlet>
+		<servlet-name>_ah_sessioncleanup</servlet-name>
+		<servlet-class>
+			com.google.apphosting.utils.servlet.SessionCleanupServlet
+		</servlet-class>
+	</servlet>
+		
+  <servlet-mapping>
+    <servlet-name>_ah_sessioncleanup</servlet-name>
+    <url-pattern>/_ah/sessioncleanup</url-pattern>
+  </servlet-mapping> 
+	
 	<servlet-mapping>
 		<servlet-name>InitService</servlet-name>
 		<url-pattern>/_ah/init</url-pattern> 
@@ -72,6 +85,7 @@
     <listener>
         <listener-class>cc.co.llabor.davbox.watchdog.ShutdownHook</listener-class>
     </listener>
+
 
 	<servlet-mapping>
 		<servlet-name>authservlet</servlet-name>
