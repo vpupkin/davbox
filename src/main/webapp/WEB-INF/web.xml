@@ -93,6 +93,10 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>CacheWebDav</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CacheWebDav</servlet-name>
 		<url-pattern>/cache/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
@@ -107,16 +111,16 @@
 		<servlet-name>ZipWebDav</servlet-name>
 		<url-pattern>/zdav/*</url-pattern>
 	</servlet-mapping>
+		<!-- basic auth 4 tc6.x! 
+			!!!comment it for GAE!!!	
 	<security-constraint>
-		<web-resource-collection><web-resource-name>fffkk</web-resource-name>
-		
+		<web-resource-collection><web-resource-name>fffkk</web-resource-name>		
 			<url-pattern>/zdav/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>admin</role-name>
 		</auth-constraint>
-		<!-- basic auth 4 tc6.x! 
-			!!!comment it for GAE!!! -->
+
 	</security-constraint>	
 	<security-constraint>
 		<web-resource-collection><web-resource-name>fffkk</web-resource-name>
@@ -124,11 +128,9 @@
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>admin</role-name>
-		</auth-constraint>
-		<!-- basic auth 4 tc6.x! 
-			!!!comment it for GAE!!! -->
+		</auth-constraint> 
 	</security-constraint>
-
+ 		-->
 	<login-config>
 		<auth-method>BASIC</auth-method>
 		<realm-name>DavBox Supported Realm</realm-name>
